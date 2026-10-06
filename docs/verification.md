@@ -6,18 +6,34 @@ Branch: feature/001-init. No remote configured; no cloud deployment performed.
 
 ## Executed checks
 
-- `dotnet test container/backend.tests`: **32 passed**, 0 failed, 0 skipped.
+- `dotnet test container/backend.tests`: **39 passed**, 0 failed, 0 skipped.
   Covers anonymous health vs protected APIs, atomic memory bootstrap, role
   changes, final-admin protection, default allow-list and explicit opening,
-  input limits, cross-origin/request-header rejection, duplicate/concurrent
+  input limits, trusted proxy HTTPS restoration and origin rejection, Unicode
+  boundaries, cross-origin/request-header rejection, duplicate/concurrent
   dispatch, uncertain timeout handling, Header Auth acknowledgement contracts,
   structured Vertex response and blocked output, bounded read-only data calls,
   and production configuration failure without fallback.
 - `npm --prefix container/frontend run build`: TypeScript and Vite production
   build passed. Dependencies pinned and frontend package-lock committed.
-- `npm --prefix container/frontend run test:e2e`: **5 passed** against the
+- `npm --prefix container/frontend run test:e2e`: **11 passed** against the
   running local app. Draft/edit/review/simulated send, admin operations, sample
-  table, desktop 1440px and mobile 390px without horizontal overflow.
+  table, desktop 1440px and mobile 390px without horizontal overflow. Added
+  unavailable AI, uncertain send, denied user, empty table, data failure, and
+  failed admin-load/retry scenarios.
+- One additional targeted browser HTTP test passed: 10000 Unicode characters
+  serialized as escaped JSON are accepted by the actual Kestrel server. Total:
+  **12 passing browser/HTTP scenarios**.
+- `node --test container/tools/n8n-workflow.test.mjs`: **9 passed**.
+  Validates the actual template Code node, invalid inputs, Header Auth, fixed
+  sender, response ordering, and execution-body retention settings.
+- `python3.12 -m unittest discover -s container/tools`: **5 passed**.
+  Configuration readiness, environment overrides, secret redaction, and invalid
+  webhook/Header Auth configuration.
+- `bash container/verify.sh`: complete local build/test/publish/browser flow
+  passed using a separately owned server on 8099, which was then shut down.
+- Strict readiness check correctly exited **2** for missing cloud configuration;
+  missing external dependencies are not reported as deployment readiness.
 - `dotnet publish container/backend -c Release`: succeeded.
 - Public `/healthz` returned HTTP 200 with `{ "status": "ok" }`.
 - Screenshots visually inspected: [desktop](screenshots/desktop.png) and
@@ -54,3 +70,11 @@ No emails were sent during these tests.
 
 Until these are verified, this is a locally reviewed implementation ready for
 connection, not a completed cloud assignment or proof of certification.
+
+## Convergence review
+
+Spec Kit Converge identified four actionable local gaps: forwarded HTTPS,
+input-boundary verification, UI failure/uncertain states, and repeatable
+verification/configuration readiness. T019–T022 were appended before fixes and
+are now complete. T017–T018 remain external, unchecked cloud acceptance tasks.
+Platform context 4863456b58c9 was checked again and is current.

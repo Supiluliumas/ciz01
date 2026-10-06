@@ -41,3 +41,29 @@ public class DeliveryTests
         Assert.Equal(1,app.Sender.Calls);
     }
 }
+
+public class BoundaryTests
+{
+    [Theory] [InlineData(201,1)] [InlineData(1,10001)]
+    public async Task OversizedEmailIsRejectedBeforeDelivery(int subjectLength,int bodyLength)
+    {
+        using var app=new AppFactory();using var client=app.Client();
+        var reply=await client.PostAsJsonAsync("/api/send",new {requestId=Guid.NewGuid(),recipient="a@example.com",subject=new string('a',subjectLength),body=new string('a',bodyLength)});
+        Assert.Equal(HttpStatusCode.BadRequest,reply.StatusCode);Assert.Equal(0,app.Sender.Calls);
+    }
+    [Fact] public async Task MaximumUnicodeEmailIsAccepted()
+    {
+        using var app=new AppFactory();using var client=app.Client();
+        var reply=await client.PostAsJsonAsync("/api/send",new {requestId=Guid.NewGuid(),recipient="a@example.com",subject=new string('ž',200),body=new string('漢',10000)});
+        Assert.Equal(HttpStatusCode.OK,reply.StatusCode);Assert.Equal(1,app.Sender.Calls);
+    }
+    [Fact] public async Task AnotherAllowedUserCannotReuseSendIdentifier()
+    {
+        using var app=new AppFactory();using var owner=app.Client();var id=Guid.NewGuid();
+        await owner.PostAsJsonAsync("/api/send",new {requestId=id,recipient="a@example.com",subject="Test",body="Body"});
+        await owner.PostAsJsonAsync("/api/admin/members",new {email="other@alza.cz",role="user"});
+        using var other=app.Client("other@alza.cz");
+        Assert.Equal(HttpStatusCode.Conflict,(await other.PostAsJsonAsync("/api/send",new {requestId=id,recipient="a@example.com",subject="Test",body="Body"})).StatusCode);
+        Assert.Equal(1,app.Sender.Calls);
+    }
+}

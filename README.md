@@ -42,6 +42,13 @@ Chromium dependency once with `npx --prefix container/frontend playwright instal
 
 ## Pending external acceptance
 
+Run the complete repeatable local verification with `bash container/verify.sh`.
+It starts and shuts down its own isolated demo server; no existing app needs
+to be running. The configuration-only readiness report is
+`python3.12 container/tools/readiness.py --strict` (no values or secrets printed).
+See the [ready-to-deploy handoff](docs/ready-to-deploy.md) for remaining inputs
+and the academy demonstration sequence.
+
 A dedicated Vibe project, project configuration, published n8n workflow and
 owner mailbox, webhook secret mount, approved Vertex model, and the academy's
 BigQuery test table are needed to demonstrate live requirements. No deployment

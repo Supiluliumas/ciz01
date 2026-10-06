@@ -41,3 +41,10 @@ in parallel with documentation. Implementation proceeds sequentially in this
 workspace. MVP is access control plus drafting/review/delivery.
 
 T017/T018 are externally dependent and must remain unchecked until evidenced.
+
+## Phase 6: Convergence
+
+- [x] T019 CRITICAL Handle trusted load-balancer HTTPS forwarding in container/backend/Program.cs and test request origin checks in container/backend.tests/RequestSecurityTests.cs per Constitution 2 and US1/AC2 (contradicts).
+- [x] T020 Verify maximum input lengths and Unicode JSON bodies in container/backend.tests/ApiTests.cs and container/backend/Program.cs per FR-002 (partial).
+- [x] T021 Exercise blocked, unavailable, empty, and uncertain states in container/frontend/e2e/app.spec.ts; add retry/uncertain-result guidance in container/frontend/src per FR-005 and FR-010 (partial).
+- [x] T022 Add reproducible local verification and non-secret deployment readiness reporting in container/verify.sh and container/tools/readiness.py with docs/ready-to-deploy.md per plan: local verification and T017 (partial).

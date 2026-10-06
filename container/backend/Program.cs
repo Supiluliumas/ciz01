@@ -10,7 +10,7 @@ var builder=WebApplication.CreateBuilder(args);
 ConfigEnvLoader.Load(builder.Configuration);
 var settings=AppSettings.Load(builder.Configuration);
 builder.Services.AddSingleton(settings);
-builder.WebHost.ConfigureKestrel(options=>options.Limits.MaxRequestBodySize=32*1024);
+builder.WebHost.ConfigureKestrel(options=>options.Limits.MaxRequestBodySize=64*1024);
 if(settings.Local)
 {
     builder.Services.AddSingleton<IAppStore,MemoryAppStore>();
@@ -31,6 +31,7 @@ else
 }
 builder.Services.AddTransient<DeliveryService>();
 var app=builder.Build();
+app.UseForwardedHeaders(RequestSecurity.ForwardingOptions(settings.Local));
 app.Use(async(context,next)=>
 {
     context.Response.Headers["X-Content-Type-Options"]="nosniff";
@@ -42,13 +43,7 @@ app.Use(async(context,next)=>
         if(settings.Local && context.Connection.RemoteIpAddress is {} ip && IPAddress.IsLoopback(ip) &&
             !context.Request.Headers.ContainsKey("X-Goog-Authenticated-User-Email"))
             context.Request.Headers["X-Goog-Authenticated-User-Email"]="accounts.google.com:demo@alza.cz";
-        if(context.Request.Path.StartsWithSegments("/api") && context.Request.Method is not ("GET" or "HEAD"))
-        {
-            if(context.Request.Headers["X-App-Request"]!="1") throw new AppError(403,"Neplatný požadavek aplikace.");
-            var origin=context.Request.Headers.Origin.ToString();
-            if(origin.Length>0 && (!Uri.TryCreate(origin,UriKind.Absolute,out var uri) || uri.Authority!=context.Request.Host.Value || uri.Scheme!=context.Request.Scheme))
-                throw new AppError(403,"Požadavek z jiného webu není povolen.");
-        }
+        RequestSecurity.ValidateMutation(context.Request);
         await next(context);
     }
     catch(AppError error) {context.Response.StatusCode=error.Status;await context.Response.WriteAsJsonAsync(new {message=error.Message});}

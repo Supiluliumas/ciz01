@@ -5,6 +5,8 @@
 /.vs
 .idea/*
 .tools/
+__pycache__/
+*.pyc
 node_modules/
 dist/
 bin/
