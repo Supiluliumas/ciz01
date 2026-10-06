@@ -4,6 +4,25 @@ Application/assignment name: `cizkovsky_ai_academy_ukol`.
 Owner-approved short platform name: `cizkovskyai` (availability and assignment pending).
 Do not deploy into the unrelated `shub` project.
 
+## Service Desk request fields
+
+The owner relayed a correction from the academy/platform team: the request
+process still uses Service Desk. Enter the complete project display name in
+its first field; the short Vibe name alone is not that field's value.
+
+| Field | Value |
+| --- | --- |
+| Name of the project | `prj-gcp-l-plat-gencode-cizkovskyai` |
+| Project Group (Domain, channels etc.) | `platform` |
+| Project (AzDo project ProjectGroup-XXX) | `gencode` |
+| Environment | `lab` |
+
+The complete display-name pattern is documented in `tech.md`. The form-field
+correction comes from the owner's supplied team message. `install.md` section
+4.4 describes platform registration, but does not specify these request fields;
+it must not be taken as proof that Service Desk is no longer required.
+Actual provisioning and access still require confirmation through platform MCP.
+
 ## Required external resources
 
 AI Enablement registers a dedicated Vibe project with the user as owner. A
