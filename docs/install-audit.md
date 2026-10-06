@@ -97,9 +97,18 @@ They require the dedicated registered project and actual integration setup.
 - Local simulation uses 8088 because 8080 is occupied; production remains 8080.
 - Local Node 24 replaces the recommended Node 22 toolchain; CI uses Node 22.
 
-Once cizkovskyai is listed: bind/restart Codex, fetch actual metadata/context,
+Once ciz01 is listed: bind/restart Codex, fetch actual metadata/context,
 set confirmed gcloud/ADC project, adapt store only if PostgreSQL is provisioned,
 inspect deployed branch and platform repository, reconcile preserving pipelines,
 configure non-secret integration settings and Secret Manager, run checks, push
 only the intended branch through vibe-git, watch CI/CD to the exact commit,
 and record real acceptance. Never deploy into shub.
+
+## Subsequent naming correction
+
+The owner finalized the project/assignment name as `ciz01` and reports the
+request is in approval. This supersedes the earlier `cizkovskyai` proposal in
+the historical audit above. Its full request display name is
+`prj-gcp-l-plat-gencode-ciz01` (28 characters). The 30-character request-field
+limit applies to that full display name, not only the derived GCP project ID.
+Platform availability must still be established by list_my_vibe_projects.

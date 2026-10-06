@@ -50,8 +50,9 @@ Do not access production business data.
 - Google sign-in succeeded; the platform client is registered with Codex and
   returned a project list containing only the unrelated `shub` project.
 - Generic Firestore platform context 4863456b58c9 was fetched and committed.
-- Assignment title is `cizkovsky_ai_academy_ukol`. Owner-approved short platform
-  name is `cizkovskyai`, pending assignment and availability verification.
+- Assignment title is `ciz01`. Owner-approved short platform
+  name is `ciz01`. The owner reports the project request is now in approval;
+  platform assignment and availability remain pending.
 - Local application is implemented. Real n8n, Vertex, Secret Manager,
   BigQuery, Firestore, and cloud deployment acceptance remain pending.
 - See `docs/verification.md` for actual local evidence and external blockers.

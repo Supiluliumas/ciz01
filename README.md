@@ -1,4 +1,4 @@
-# cizkovsky_ai_academy_ukol
+# ciz01
 
 AI Academy test application: AI email drafting, human review, and sending via
 an n8n Header Auth webhook. Includes administrator access management and a

@@ -3,7 +3,7 @@
 **Feature Branch**: `feature/001-init`
 **Created**: 2026-10-06
 **Status**: Ready for implementation
-**Input**: Build `cizkovsky_ai_academy_ukol`: an app drafting emails with AI
+**Input**: Build `ciz01`: an app drafting emails with AI
 and sending reviewed emails through n8n, meeting the seven academy criteria.
 
 ## User Scenarios & Testing

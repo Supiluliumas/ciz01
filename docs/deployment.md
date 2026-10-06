@@ -1,8 +1,12 @@
 # Deploying the academy assignment
 
-Application/assignment name: `cizkovsky_ai_academy_ukol`.
-Owner-approved short platform name: `cizkovskyai` (availability and assignment pending).
+Application/assignment name: `ciz01`.
+Owner-selected final short platform name: `ciz01` (request in approval;
+platform availability and assignment pending).
 Do not deploy into the unrelated `shub` project.
+
+The full requested display name `prj-gcp-l-plat-gencode-ciz01` has 28 characters.
+Actual resource IDs must still come from platform MCP after registration.
 
 ## Service Desk request fields
 
@@ -12,7 +16,7 @@ its first field; the short Vibe name alone is not that field's value.
 
 | Field | Value |
 | --- | --- |
-| Name of the project | `prj-gcp-l-plat-gencode-cizkovskyai` |
+| Name of the project | `prj-gcp-l-plat-gencode-ciz01` |
 | Project Group (Domain, channels etc.) | `platform` |
 | Project (AzDo project ProjectGroup-XXX) | `gencode` |
 | Environment | `lab` |
