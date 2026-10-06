@@ -37,9 +37,14 @@ Do not access production business data.
 - Git 2.55.0 and Node.js 24.21.0 are available.
 - Python 3.12.15 and Google Cloud CLI 587.0.0 were installed and verified.
 - Visual Studio Code is already installed in `/Applications`.
-- Project name, Google sign-in, MCP connection, platform context, n8n workflow,
-  and BigQuery test dataset identifiers have not yet been verified.
-- No application has been created or deployed.
+- Google sign-in succeeded; the platform client is registered with Codex and
+  returned a project list containing only the unrelated `shub` project.
+- Generic Firestore platform context 4863456b58c9 was fetched and committed.
+- Assignment title is `cizkovsky_ai_academy_ukol`. Suggested short platform
+  name is `cizkovskyai`, pending assignment and availability verification.
+- Local application is implemented. Real n8n, Vertex, Secret Manager,
+  BigQuery, Firestore, and cloud deployment acceptance remain pending.
+- See `docs/verification.md` for actual local evidence and external blockers.
 
 ## Completion evidence
 

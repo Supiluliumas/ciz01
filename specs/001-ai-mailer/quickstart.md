@@ -1,7 +1,7 @@
 # Quickstart validation
 
 From repository root run `bash container/run-local.sh` and open
-http://localhost:8080. Requires .NET 10 and Node 22+.
+http://localhost:8088. Requires .NET 10 and Node 22+.
 
 The first local visitor is demo@alza.cz and is administrator. Local mode uses
 memory (resets at restart), static drafting, sample rows, and simulated delivery.

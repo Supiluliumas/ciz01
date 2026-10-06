@@ -1,1 +1,56 @@
-platform-gencode
+# cizkovsky_ai_academy_ukol
+
+AI Academy test application: AI email drafting, human review, and sending via
+an n8n Header Auth webhook. Includes administrator access management and a
+read-only preview of the academy's BigQuery test table.
+
+## Run locally
+
+Requires .NET 10 and Node 22+. From repository root:
+
+```bash
+bash container/run-local.sh
+```
+
+Open http://localhost:8088. This is an explicit **local simulation**: no AI
+request, no email sent, and no cloud data read. Access settings are in memory
+and reset on restart. The first loopback visitor uses demo@alza.cz as a visibly
+labeled development identity. Cloud mode never inserts a development identity.
+
+```bash
+dotnet test container/backend.tests
+npm --prefix container/frontend run build
+npm --prefix container/frontend run test:e2e
+```
+
+Browser tests expect the local app to be running on port 8088. Install its
+Chromium dependency once with `npx --prefix container/frontend playwright install chromium`.
+
+## What is implemented
+
+- Czech responsive composer with recipient, instruction, tone, language,
+  editable subject/body, explicit review dialog, and delivery acknowledgement.
+- IAP identity and default allow-list, first-admin bootstrap, administrator and
+  allowed-user management, last-admin protection, and organisation access mode.
+- Production Vertex REST integration using ADC and structured output.
+- Server-side n8n Header Auth; Secret Manager-mounted N8N_AUTH_TOKEN.
+- Firestore transactions for access and delivery coordination; no email-body
+  persistence, no automatic retries, and duplicate-ID protection.
+- BigQuery read-only preview capped at 20 rows; no business database access.
+- Platform-compatible single-container Dockerfile, healthz, and configuration.
+- Spec Kit workflows and specification/plan/tasks committed before app implementation.
+
+## Pending external acceptance
+
+A dedicated Vibe project, project configuration, published n8n workflow and
+owner mailbox, webhook secret mount, approved Vertex model, and the academy's
+BigQuery test table are needed to demonstrate live requirements. No deployment
+or certification completion is claimed by the local demo.
+
+See [deployment](docs/deployment.md), [n8n setup](docs/n8n.md),
+[assignment](docs/assignment.md), [specification](specs/001-ai-mailer/spec.md),
+[implementation plan](specs/001-ai-mailer/plan.md), and
+[verification evidence](docs/verification.md).
+
+Development has no remote until the assigned Vibe project is available. Never
+connect this assignment to shub or another unrelated project.

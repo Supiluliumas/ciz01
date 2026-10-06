@@ -1,0 +1,7 @@
+{
+  "specify_cli_version": "1.1.1.dev0",
+  "source_url": "https://github.com/github/spec-kit.git",
+  "commit": "2dda047809dd17fa56200408ce0228a2cfe08be7",
+  "integration": "codex",
+  "initialized": "2026-10-06"
+}
