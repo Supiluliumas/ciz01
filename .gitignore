@@ -1,6 +1,21 @@
-﻿################################################################################
+################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
 /.vs
 .idea/*
+.tools/
+node_modules/
+dist/
+bin/
+obj/
+coverage/
+playwright-report/
+test-results/
+*.log
+*.user
+.env*
+.DS_Store
+container/backend/wwwroot/
+.agents/auth.json
+.agents/sessions/
