@@ -48,3 +48,10 @@ T017/T018 are externally dependent and must remain unchecked until evidenced.
 - [x] T020 Verify maximum input lengths and Unicode JSON bodies in container/backend.tests/ApiTests.cs and container/backend/Program.cs per FR-002 (partial).
 - [x] T021 Exercise blocked, unavailable, empty, and uncertain states in container/frontend/e2e/app.spec.ts; add retry/uncertain-result guidance in container/frontend/src per FR-005 and FR-010 (partial).
 - [x] T022 Add reproducible local verification and non-secret deployment readiness reporting in container/verify.sh and container/tools/readiness.py with docs/ready-to-deploy.md per plan: local verification and T017 (partial).
+
+## Phase 7: Canonical install compliance
+
+- [x] T023 Audit root install.md against setup, platform context, repository and application; record docs/install-audit.md, protect unknown API paths under the access filter, refine build-context exclusions, and pass full local verification.
+
+T017/T018 remain pending: project registration, actual data-store selection,
+platform reconciliation, CI/CD, secret mount and live integration acceptance.

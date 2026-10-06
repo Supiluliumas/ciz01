@@ -21,6 +21,7 @@ public static class Api
             http.Items["email"]=email;http.Items["admin"]=decision.IsAdmin;
             return await next(context);
         });
+        api.Map("/{**path}",()=>Results.Json(new {message="API adresa neexistuje."},statusCode:404));
         api.MapGet("/me",(HttpContext context)=>new {email=Actor(context),isAdmin=(bool)context.Items["admin"]!,localMode=settings.Local});
         api.MapGet("/status",()=>new {localMode=settings.Local,ai=settings.Local?"simulation":"configured",email=settings.Local?"simulation":"configured",testData=settings.Local?"simulation":"configured",secret=settings.Local?"not-used":"configured"});
         api.MapPost("/drafts",async(DraftRequest input,IDraftGenerator generator,CancellationToken ct)=>await generator.GenerateAsync(input.Validated(),ct));

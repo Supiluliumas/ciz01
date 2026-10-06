@@ -43,9 +43,18 @@ assigned region. These dependencies are not present in this workspace.
 3. Fetch `get_vibe_project_info` and `get_vibe_context(project=...,known_version=...)`.
    Replace the platform context and lock only if refreshed. Write returned
    `config_env` keys to container/config.env, preserving app-specific keys.
+   Once the actual GCP ID is confirmed, set the gcloud default project and ADC
+   quota project to that ID using `gcloud config set project <actual-id>` and
+   `gcloud auth application-default set-quota-project <actual-id>`. Never use
+   the human-readable `prj-gcp-...` display name as the GCP project ID.
 4. If the actual store is PostgreSQL, implement IAppStore using the platform's
    IAM database variant before deployment. The current generic context is Firestore.
-5. Obtain remote URL from `get_vibe_repo`. Use the existing `vibe-git` wrapper
+5. After project binding, read deployment status and inspect all platform
+   branches to classify the repository (install section 6). If an existing app
+   is live, work from `currently_deployed` rather than pushing this local branch
+   over it. If both repositories contain applications, resolve which application
+   should be kept before migration. Never push stale work over a newer deploy.
+6. Obtain remote URL from `get_vibe_repo`. Use the existing `vibe-git` wrapper
    to add remote, fetch, and reconcile local feature/001-init with origin/main.
    Preserve `.azuredevops/` and the platform `.gitignore`. The owner explicitly
    authorized a private GitHub backup under remote `github`; keep the platform

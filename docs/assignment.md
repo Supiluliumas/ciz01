@@ -3,9 +3,19 @@
 ## Sources and priority
 
 The user's message and assignment screenshot define the application requirements.
-`install.md` describes the company platform setup. It is setup reference material,
-not permission to replace the application requirements. Platform coding context
-must be fetched before selecting or scaffolding the application stack.
+The owner explicitly designated root `install.md` as canonical alongside
+`tech.md` and `principles.md`. Apply its explicit replacements of older setup
+rules; retain the technical and coding rules it does not replace. These setup
+rules coexist with the user's application requirements. Refresh server-managed
+platform context through MCP; never hand-edit it. The unchanged archival copy
+is at `docs/install.md`. Root placement is the owner's explicit preference,
+which overrides install section 9's instruction to move the guide into docs.
+
+Spec Kit was explicitly required in the supplied assignment, so it is enabled
+locally despite being off by default in the setup guide. The owner also
+explicitly authorized a private GitHub backup, overriding the default ban on
+another remote; it does not replace platform deployment. GitHub upload is still
+pending sign-in and has not been reported as completed.
 
 ## Application scope
 

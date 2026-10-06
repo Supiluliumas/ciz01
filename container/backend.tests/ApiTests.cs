@@ -128,6 +128,18 @@ public class ApiTests
         using var app = new AppFactory(); using var owner = app.Client();
         Assert.Equal(HttpStatusCode.NotFound, (await owner.GetAsync("/api/not-a-route")).StatusCode);
     }
+    [Theory]
+    [InlineData("/api/not-a-route")]
+    [InlineData("/api/admin/not-a-route")]
+    public async Task UnknownApiStillRequiresIdentityAndAccess(string path)
+    {
+        using var app = new AppFactory(); using var anonymous = app.Client(null);
+        Assert.Equal(HttpStatusCode.Unauthorized, (await anonymous.GetAsync(path)).StatusCode);
+        using var owner = app.Client(); await owner.GetAsync("/api/me");
+        using var stranger = app.Client("stranger@alza.cz");
+        Assert.Equal(HttpStatusCode.Forbidden, (await stranger.GetAsync(path)).StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, (await owner.GetAsync(path)).StatusCode);
+    }
     [Fact] public async Task CrossOriginMutationIsRejectedEvenWithIdentity()
     {
         using var app = new AppFactory(); using var owner = app.Client();

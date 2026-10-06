@@ -9,3 +9,4 @@ backend.tests
 frontend/e2e
 frontend/test-results
 frontend/playwright-report
+tools

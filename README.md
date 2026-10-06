@@ -4,6 +4,15 @@ AI Academy test application: AI email drafting, human review, and sending via
 an n8n Header Auth webhook. Includes administrator access management and a
 read-only preview of the academy's BigQuery test table.
 
+## Canonical platform instructions
+
+Use root [install.md](install.md) together with [tech.md](tech.md) and
+[principles.md](principles.md), as explicitly directed by the owner. Explicit
+setup replacements in install.md take precedence over older setup rules;
+remaining technical and coding requirements continue to apply. Server-managed
+context must only be refreshed through MCP. See [the compliance audit](docs/install-audit.md)
+for verified evidence, authorized exceptions, and pending platform steps.
+
 ## Run locally
 
 Requires .NET 10 and Node 22+. From repository root:

@@ -7,24 +7,21 @@ cloud deployment and live acceptance remain pending.
 
 ## Executed checks
 
-- `dotnet test container/backend.tests`: **39 passed**, 0 failed, 0 skipped.
+- `dotnet test container/backend.tests`: **41 passed**, 0 failed, 0 skipped.
   Covers anonymous health vs protected APIs, atomic memory bootstrap, role
   changes, final-admin protection, default allow-list and explicit opening,
   input limits, trusted proxy HTTPS restoration and origin rejection, Unicode
   boundaries, cross-origin/request-header rejection, duplicate/concurrent
   dispatch, uncertain timeout handling, Header Auth acknowledgement contracts,
   structured Vertex response and blocked output, bounded read-only data calls,
-  and production configuration failure without fallback.
+  unknown API authentication/access, and production configuration failure without fallback.
 - `npm --prefix container/frontend run build`: TypeScript and Vite production
   build passed. Dependencies pinned and frontend package-lock committed.
-- `npm --prefix container/frontend run test:e2e`: **11 passed** against the
-  running local app. Draft/edit/review/simulated send, admin operations, sample
-  table, desktop 1440px and mobile 390px without horizontal overflow. Added
-  unavailable AI, uncertain send, denied user, empty table, data failure, and
-  failed admin-load/retry scenarios.
-- One additional targeted browser HTTP test passed: 10000 Unicode characters
-  serialized as escaped JSON are accepted by the actual Kestrel server. Total:
-  **12 passing browser/HTTP scenarios**.
+- `npm --prefix container/frontend run test:e2e`: **12 passed** in the full
+  verification run against its isolated published local app. Draft/edit/review/
+  simulated send, admin operations, bounded sample table, desktop and mobile
+  layouts, unavailable AI, uncertain send, denied user, empty table, failed data
+  and admin-load retry, and maximum Unicode body over actual HTTP.
 - `node --test container/tools/n8n-workflow.test.mjs`: **9 passed**.
   Validates the actual template Code node, invalid inputs, Header Auth, fixed
   sender, response ordering, and execution-body retention settings.
@@ -79,3 +76,11 @@ input-boundary verification, UI failure/uncertain states, and repeatable
 verification/configuration readiness. T019–T022 were appended before fixes and
 are now complete. T017–T018 remain external, unchecked cloud acceptance tasks.
 Platform context 4863456b58c9 was checked again and is current.
+
+## Canonical install audit
+
+Full audit against root install.md completed on 2026-10-06. See
+[install-audit.md](install-audit.md) for all setup sections, platform status,
+source precedence, authorized exceptions, and pending live verification.
+The complete local suite passed: 41 backend + 12 browser + 9 workflow + 5
+readiness = 67 tests. No remote or cloud deployment was performed in this audit.

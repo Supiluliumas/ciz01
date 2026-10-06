@@ -57,7 +57,6 @@ app.Use(async(context,next)=>
 });
 app.MapGet("/healthz",()=>Results.Json(new {status="ok"}));
 app.MapAppApi(settings);
-app.Map("/api/{**path}",()=>Results.Json(new {message="API adresa neexistuje."},statusCode:404));
 app.UseDefaultFiles();app.UseStaticFiles();app.MapFallbackToFile("index.html");
 app.Run();
 public partial class Program {}
