@@ -2,7 +2,8 @@
 
 Date: 2026-10-06 (Europe/Prague).
 Application: cizkovsky_ai_academy_ukol / AI Mailer.
-Branch: feature/001-init. No remote configured; no cloud deployment performed.
+Branch: feature/001-init. Private GitHub backup authorized by the owner;
+cloud deployment and live acceptance remain pending.
 
 ## Executed checks
 
@@ -62,7 +63,7 @@ No emails were sent during these tests.
 ## Exact external inputs needed
 
 1. Assigned short Vibe project name, registered with the user as owner/admin.
-   Suggested short name: cizkovskyai. Actual IDs must come from platform MCP.
+   Owner-approved short name: cizkovskyai. Actual IDs must come from platform MCP.
 2. Production n8n webhook URL and matching Header Auth credential stored using
    Secret Manager, plus owner SMTP mailbox in the n8n workflow.
 3. Academy BigQuery project/dataset/table reference and appropriate read grants.

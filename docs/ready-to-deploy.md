@@ -1,6 +1,6 @@
 # Ready-to-deploy handoff
 
-Assignment title: cizkovsky_ai_academy_ukol. Suggested short Vibe name:
+Assignment title: cizkovsky_ai_academy_ukol. Owner-approved short Vibe name:
 cizkovskyai. The owner requested a dedicated project; provisioning is pending.
 
 ## Work already prepared

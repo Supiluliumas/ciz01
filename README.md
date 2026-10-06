@@ -59,5 +59,7 @@ See [deployment](docs/deployment.md), [n8n setup](docs/n8n.md),
 [implementation plan](specs/001-ai-mailer/plan.md), and
 [verification evidence](docs/verification.md).
 
-Development has no remote until the assigned Vibe project is available. Never
-connect this assignment to shub or another unrelated project.
+The owner authorized a private GitHub repository for this assignment. Use the
+`github` remote for that backup; reserve `origin` for the dedicated Vibe repository
+when provisioning finishes. Never connect this assignment to shub or another
+unrelated project.

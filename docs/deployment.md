@@ -1,7 +1,7 @@
 # Deploying the academy assignment
 
 Application/assignment name: `cizkovsky_ai_academy_ukol`.
-Suggested short platform name: `cizkovskyai` (not yet verified or assigned).
+Owner-approved short platform name: `cizkovskyai` (availability and assignment pending).
 Do not deploy into the unrelated `shub` project.
 
 ## Required external resources
@@ -28,7 +28,9 @@ assigned region. These dependencies are not present in this workspace.
    IAM database variant before deployment. The current generic context is Firestore.
 5. Obtain remote URL from `get_vibe_repo`. Use the existing `vibe-git` wrapper
    to add remote, fetch, and reconcile local feature/001-init with origin/main.
-   Preserve `.azuredevops/` and the platform `.gitignore`; no other remote.
+   Preserve `.azuredevops/` and the platform `.gitignore`. The owner explicitly
+   authorized a private GitHub backup under remote `github`; keep the platform
+   repository as `origin` and deploy through the platform pipeline.
 
 ## Integration configuration
 
