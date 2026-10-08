@@ -112,3 +112,11 @@ the historical audit above. Its full request display name is
 `prj-gcp-l-plat-gencode-ciz01` (28 characters). The 30-character request-field
 limit applies to that full display name, not only the derived GCP project ID.
 Platform availability must still be established by list_my_vibe_projects.
+
+## Subsequent GitHub review handoff — 2026-10-08
+
+The owner explicitly requested a repository link for academy supervisors while
+platform project access is blocked. GitHub authentication is now available as
+Supiluliumas. Private repo: https://github.com/Supiluliumas/ciz01, remote github;
+origin remains reserved for the platform repo. This supersedes the earlier
+historical no-remote/pending-sign-in state. No cloud deployment is implied.

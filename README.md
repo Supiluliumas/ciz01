@@ -4,6 +4,19 @@ AI Academy test application: AI email drafting, human review, and sending via
 an n8n Header Auth webhook. Includes administrator access management and a
 read-only preview of the academy's BigQuery test table.
 
+## Repository for academy review
+
+Private GitHub repository: https://github.com/Supiluliumas/ciz01
+
+The application is implemented and locally verified. Review
+[verification evidence](docs/verification.md), [access approval](docs/access.md),
+[deployment handoff](docs/ready-to-deploy.md), and both Spec Kit feature folders.
+The complete local suite has 85 passing tests. Cloud deployment is blocked by
+platform registration/access: ciz01 is not yet visible for the owner's account.
+Real Vertex, n8n delivery, Secret Manager and BigQuery acceptance remain pending.
+Reviewers need permission to this private repository; publishing code here does
+not deploy the application or change platform access.
+
 ## Canonical platform instructions
 
 Use root [install.md](install.md) together with [tech.md](tech.md) and

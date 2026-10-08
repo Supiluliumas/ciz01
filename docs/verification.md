@@ -123,3 +123,13 @@ binding, identifiers, repository connection, IAM change or deployment performed.
 Generic get_vibe_context known_version=4863456b58c9 returned up_to_date=true.
 The earlier RefreshError was resolved; AI Enablement must verify ciz01
 registration/ownership before connecting according to install section 4.3/4.4.
+
+## GitHub reviewer handoff — 2026-10-08
+
+Private repository: https://github.com/Supiluliumas/ciz01. User explicitly
+requested uploading the complete committed assignment for supervisor review;
+this is an authorized exception to the platform-only remote default. Remote
+is github; future Vibe origin remains separate. No Cloud Run/IAM change or live
+integration acceptance is implied. Full local verification was rerun before
+push. Historical Git blobs scanned for common credential/private-key patterns:
+179 scanned, no likely matches (pattern scan, not proof for all secret formats).

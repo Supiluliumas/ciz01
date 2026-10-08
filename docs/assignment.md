@@ -14,8 +14,9 @@ which overrides install section 9's instruction to move the guide into docs.
 Spec Kit was explicitly required in the supplied assignment, so it is enabled
 locally despite being off by default in the setup guide. The owner also
 explicitly authorized a private GitHub backup, overriding the default ban on
-another remote; it does not replace platform deployment. GitHub upload is still
-pending sign-in and has not been reported as completed.
+another remote; it does not replace platform deployment. The GitHub backup is
+at https://github.com/Supiluliumas/ciz01 and is separate from the eventual
+platform origin/deployment. Reviewer access must be granted to the private repo.
 
 ## Application scope
 
