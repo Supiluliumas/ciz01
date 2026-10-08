@@ -111,3 +111,15 @@ context freshness or project-list verification is claimed for this session.
 The gcloud auth login --update-adc browser flow was launched for human completion.
 Project approval is owner-reported; actual assigned name and metadata, IAP,
 Firestore/store variant and all real integrations remain cloud acceptance.
+
+## Platform recheck after supplied project name — 2026-10-08
+
+Owner supplied `prj-gcp-l-plat-gencode-ciz01`; short name ciz01. Browser sign-in
+completed and ADC updated successfully. gcloud active account confirmed as
+martin.cizkovsky@alza.cz, matching the owner's explicit account confirmation.
+list_my_vibe_projects succeeded but listed only unrelated shub, so ciz01 is
+not registered for this account or owner/admin access is missing. No project
+binding, identifiers, repository connection, IAM change or deployment performed.
+Generic get_vibe_context known_version=4863456b58c9 returned up_to_date=true.
+The earlier RefreshError was resolved; AI Enablement must verify ciz01
+registration/ownership before connecting according to install section 4.3/4.4.

@@ -1,9 +1,11 @@
 # Ready-to-deploy handoff
 
 Assignment title: ciz01. Owner-approved short Vibe name:
-ciz01 was the requested name. On 2026-10-08 the owner reports project approval
-and will supply the actual assigned name after local preparation. Platform
-visibility, identifiers and store selection must still be verified.
+The owner supplied approved request name `prj-gcp-l-plat-gencode-ciz01` on
+2026-10-08; the short platform name is `ciz01`. Google account is
+`martin.cizkovsky@alza.cz`. Platform list currently returns only unrelated
+`shub`; registration/owner access for ciz01 must be checked by AI Enablement.
+Actual identifiers and store selection are not yet verified.
 
 ## Work already prepared
 
@@ -97,7 +99,7 @@ Forwarded scheme handling follows [ASP.NET Core forwarded headers guidance](http
 Only X-Forwarded-Proto is processed, one hop; forwarded host and identity are
 not adopted. Local mode keeps the default known-proxy restrictions.
 
-Google sign-in expired during the 2026-10-08 preparation session. A documented
-`gcloud auth login --update-adc` browser flow was launched; completion must be
-verified before any next platform calls. Do not claim current platform metadata
-was refreshed until that succeeds. Local verification does not require tokens.
+Google sign-in and ADC were renewed successfully on 2026-10-08 through
+`gcloud auth login --update-adc`. Platform calls work again; generic context
+4863456b58c9 was confirmed current. Project-specific context and connection
+remain blocked by ciz01 not appearing in the user’s platform project list.

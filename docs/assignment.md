@@ -71,3 +71,8 @@ whole-company app mode is disabled. IAP remains the platform authentication
 layer, and initial deployment must be owner-only until bootstrap. See access.md.
 Owner reports project approval and will provide final assigned name after local
 preparation. That report is not a substitute for MCP project-list verification.
+
+Owner subsequently supplied approved request name prj-gcp-l-plat-gencode-ciz01
+and confirmed corporate account martin.cizkovsky@alza.cz. Sign-in/ADC renewed;
+platform list still contains only shub. Actual ciz01 registration and user
+ownership/access remain to be verified by AI Enablement.
