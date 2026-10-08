@@ -90,6 +90,14 @@ implementation uses tabledata.list; no query job permission or write permission
 is required. Use developer ADC locally and the attached service account in cloud.
 No service-account keys or developer impersonation.
 
+## IAP initialization and request approval
+
+Before the initial deployment, use list_app_access and platform access tools to
+limit IAP to the owner, preserving owner access. Initialize the owner as first
+administrator, then admit intended corporate identities to reach the request
+page. Only approved app members may use features. See [access.md](access.md).
+Do not enable organisation-wide app mode or automatically grant project IAM.
+
 ## Verify and deploy
 
 Run `dotnet test container/backend.tests` and

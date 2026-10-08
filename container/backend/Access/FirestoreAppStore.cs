@@ -1,7 +1,7 @@
 using Backend.Models;
 using Google.Cloud.Firestore;
 namespace Backend.Access;
-public sealed class FirestoreAppStore(FirestoreDb db) : IAppStore
+public sealed partial class FirestoreAppStore(FirestoreDb db) : IAppStore
 {
     DocumentReference Settings => db.Collection("settings").Document("access");
     DocumentReference Member(string email,string role) => db.Collection(role=="admin"?"admins":"allowed_users").Document(email);
@@ -18,14 +18,16 @@ public sealed class FirestoreAppStore(FirestoreDb db) : IAppStore
             tx.Set(Settings,new Dictionary<string,object>{{"mode","allowlist"},{"initialized",true},{"adminCount",first?1:existing.Count}});
             return new AccessDecision(first||admin.Exists||user.Exists,first||admin.Exists);
         }
-        return new AccessDecision(admin.Exists||user.Exists||settings.GetValue<string>("mode")=="everyone",admin.Exists);
+        return new AccessDecision(admin.Exists||user.Exists,admin.Exists);
     },cancellationToken:ct);
-    public Task<AccessState> StateAsync(CancellationToken ct) => db.RunTransactionAsync(async tx =>
+    public Task<AccessState> StateAsync(string actor,CancellationToken ct) => db.RunTransactionAsync(async tx =>
     {
         var settings=await tx.GetSnapshotAsync(Settings,ct);
+        var actorDoc=await tx.GetSnapshotAsync(Member(actor,"admin"),ct);
+        if(!actorDoc.Exists) throw new AppError(403,"Tato akce je dostupná pouze administrátorům.");
         var admins=await tx.GetSnapshotAsync(db.Collection("admins"),ct);
         var users=await tx.GetSnapshotAsync(db.Collection("allowed_users"),ct);
-        return new AccessState(admins.Documents.Select(d=>d.Id).Order().ToArray(),users.Documents.Select(d=>d.Id).Order().ToArray(),settings.GetValue<string>("mode"));
+        return new AccessState(admins.Documents.Select(d=>d.Id).Order().ToArray(),users.Documents.Select(d=>d.Id).Order().ToArray(),"allowlist");
     },cancellationToken:ct);
     public Task ChangeMemberAsync(string actor,string email,string role,bool remove,CancellationToken ct) => db.RunTransactionAsync(async tx =>
     {
@@ -44,7 +46,8 @@ public sealed class FirestoreAppStore(FirestoreDb db) : IAppStore
         await tx.GetSnapshotAsync(Settings,ct);
         var admin=await tx.GetSnapshotAsync(Member(actor,"admin"),ct);
         if(!admin.Exists) throw new AppError(403,"Tato akce je dostupná pouze administrátorům.");
-        tx.Update(Settings,new Dictionary<string,object>{{"mode",mode}});
+        Input.Choice(mode,"allowlist");
+        tx.Update(Settings,new Dictionary<string,object>{{"mode","allowlist"}});
     },cancellationToken:ct);
     public Task<SendReservation> ReserveAsync(Guid id,string actor,string fingerprint,CancellationToken ct) => db.RunTransactionAsync(async tx =>
     {

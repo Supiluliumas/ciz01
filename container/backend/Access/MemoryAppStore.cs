@@ -6,18 +6,18 @@ public sealed class MemoryAppStore : IAppStore
     readonly HashSet<string> admins=[];
     readonly HashSet<string> users=[];
     readonly Dictionary<Guid,(string Actor,string Fingerprint,string Status)> sends=[];
-    string mode="allowlist";
+    readonly Dictionary<string,AccessRequest> requests=[];
     bool initialized;
     public Task<AccessDecision> AccessAsync(string email,CancellationToken ct)
     {
         lock(gate)
         {
             if(!initialized) {admins.Add(email); initialized=true;}
-            return Task.FromResult(new AccessDecision(admins.Contains(email)||users.Contains(email)||mode=="everyone",admins.Contains(email)));
+            return Task.FromResult(new AccessDecision(admins.Contains(email)||users.Contains(email),admins.Contains(email)));
         }
     }
-    public Task<AccessState> StateAsync(CancellationToken ct)
-    {lock(gate) return Task.FromResult(new AccessState(admins.Order().ToArray(),users.Order().ToArray(),mode));}
+    public Task<AccessState> StateAsync(string actor,CancellationToken ct)
+    {lock(gate){RequireAdmin(actor);return Task.FromResult(new AccessState(admins.Order().ToArray(),users.Order().ToArray(),"allowlist"));}}
     void RequireAdmin(string actor) {if(!admins.Contains(actor)) throw new AppError(403,"Tato akce je dostupná pouze administrátorům.");}
     public Task ChangeMemberAsync(string actor,string email,string role,bool remove,CancellationToken ct)
     {
@@ -30,7 +30,34 @@ public sealed class MemoryAppStore : IAppStore
         return Task.CompletedTask;
     }
     public Task ChangeModeAsync(string actor,string value,CancellationToken ct)
-    {lock(gate){RequireAdmin(actor);mode=value;} return Task.CompletedTask;}
+    {lock(gate){RequireAdmin(actor);Input.Choice(value,"allowlist");} return Task.CompletedTask;}
+    public Task<AccessRequest?> RequestAsync(string email,bool submit,CancellationToken ct)
+    {
+        lock(gate)
+        {
+            requests.TryGetValue(email,out var request);
+            if(submit && !admins.Contains(email) && !users.Contains(email) &&
+                (request is null || request.Status=="approved"))
+                requests[email]=request=new AccessRequest(email,"pending",DateTimeOffset.UtcNow);
+            return Task.FromResult(request);
+        }
+    }
+    public Task<AccessRequest[]> RequestsAsync(string actor,CancellationToken ct)
+    {
+        lock(gate){RequireAdmin(actor);return Task.FromResult(requests.Values.Where(r=>r.Status=="pending").OrderBy(r=>r.CreatedAt).Take(100).ToArray());}
+    }
+    public Task ReviewAsync(string actor,string email,bool approve,CancellationToken ct)
+    {
+        lock(gate)
+        {
+            RequireAdmin(actor);
+            if(!requests.TryGetValue(email,out var request) || request.Status!="pending")
+                throw new AppError(409,"Žádost už byla vyřízena nebo neexistuje. Obnov seznam žádostí.");
+            requests[email]=request with {Status=approve?"approved":"rejected",ReviewedAt=DateTimeOffset.UtcNow,ReviewedBy=actor};
+            if(approve) users.Add(email);
+        }
+        return Task.CompletedTask;
+    }
     public Task<SendReservation> ReserveAsync(Guid id,string actor,string fingerprint,CancellationToken ct)
     {
         lock(gate)

@@ -1,15 +1,18 @@
 # Verification evidence
 
-Date: 2026-10-06 (Europe/Prague).
+Latest verification: 2026-10-08 (Europe/Prague).
+Earlier implementation/audit evidence: 2026-10-06.
 Application: ciz01 / AI Mailer.
 Branch: feature/001-init. Private GitHub backup authorized by the owner;
 cloud deployment and live acceptance remain pending.
 
 ## Executed checks
 
-- `dotnet test container/backend.tests`: **41 passed**, 0 failed, 0 skipped.
+- `dotnet test container/backend.tests`: **54 passed**, 0 failed, 0 skipped.
   Covers anonymous health vs protected APIs, atomic memory bootstrap, role
-  changes, final-admin protection, default allow-list and explicit opening,
+  changes, own request identity, duplicates, exact corporate domains, admin-only
+  reviews, approval/rejection, concurrent decisions, revocation/reapplication,
+  in-store revoked-admin checks, final-admin protection, individual allow-list and rejection of organisation-wide access,
   input limits, trusted proxy HTTPS restoration and origin rejection, Unicode
   boundaries, cross-origin/request-header rejection, duplicate/concurrent
   dispatch, uncertain timeout handling, Header Auth acknowledgement contracts,
@@ -17,11 +20,13 @@ cloud deployment and live acceptance remain pending.
   unknown API authentication/access, and production configuration failure without fallback.
 - `npm --prefix container/frontend run build`: TypeScript and Vite production
   build passed. Dependencies pinned and frontend package-lock committed.
-- `npm --prefix container/frontend run test:e2e`: **12 passed** in the full
+- `npm --prefix container/frontend run test:e2e`: **17 passed** in the full
   verification run against its isolated published local app. Draft/edit/review/
   simulated send, admin operations, bounded sample table, desktop and mobile
   layouts, unavailable AI, uncertain send, denied user, empty table, failed data
-  and admin-load retry, and maximum Unicode body over actual HTTP.
+  and admin-load retry, maximum Unicode body over actual HTTP, applicant pending/
+  rejected/error states, real HTTP admin approval/rejection/revocation, mobile
+  request layout and refresh failures without stale review controls.
 - `node --test container/tools/n8n-workflow.test.mjs`: **9 passed**.
   Validates the actual template Code node, invalid inputs, Header Auth, fixed
   sender, response ordering, and execution-body retention settings.
@@ -49,7 +54,7 @@ No emails were sent during these tests.
 
 | Requirement | Implementation | Actual evidence / remaining work |
 | --- | --- | --- |
-| Own GCP project | Connect via Vibe MCP | Pending dedicated project; platform list still only contains shub |
+| Own GCP project | Connect via Vibe MCP | Owner reports project approved; final assigned name/platform verification pending |
 | Admin panel | /admin, access APIs, transactional stores | Backend and browser tests passed locally; cloud store unverified |
 | Email through n8n | Review dialog, Header Auth client, workflow template | Client contracts and simulation passed; configure n8n and verify real receipt |
 | Vertex AI | ADC REST structured generation | Contract tests passed; approved model/project IAM and real response pending |
@@ -84,3 +89,25 @@ Full audit against root install.md completed on 2026-10-06. See
 source precedence, authorized exceptions, and pending live verification.
 The complete local suite passed: 41 backend + 12 browser + 9 workflow + 5
 readiness = 67 tests. No remote or cloud deployment was performed in this audit.
+
+## Access approval verification — 2026-10-08
+
+Spec Kit 002-access-requests spec/plan/research/data/contracts/tasks were created
+and committed before implementation. New request tests failed first; full final
+`bash container/verify.sh` passed: **54 backend + 17 browser/HTTP + 9 workflow +
+5 readiness = 85 tests**. Frontend build and Release publish passed. New mobile
+request screenshot visually inspected. Read-only design/code review covered
+transaction authorization and all-reads-before-writes. A stale admin refresh
+notice bug was corrected and has a browser regression test.
+
+The existing mailer scenarios still pass. Local services remain simulations;
+request lifecycle tests exercise memory, not live Firestore. No emails sent.
+Mode everyone no longer grants access even if present in old Firestore settings.
+The first-administrator race is handled operationally by owner-only IAP during
+initialization, preserving platform bootstrap; verify this before first deploy.
+
+Google sign-in has expired: get_vibe_context returned RefreshError, so no current
+context freshness or project-list verification is claimed for this session.
+The gcloud auth login --update-adc browser flow was launched for human completion.
+Project approval is owner-reported; actual assigned name and metadata, IAP,
+Firestore/store variant and all real integrations remain cloud acceptance.

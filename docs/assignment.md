@@ -62,3 +62,12 @@ Do not access production business data.
 Record actual local test results, successful cloud integration checks, deployment
 commit and URL, and a mapping of all seven capabilities to their demonstrated
 behavior. A simulated local response does not demonstrate a cloud integration.
+
+## 2026-10-08 access requirement and project update
+
+Owner requires approved individual corporate addresses after requesting access.
+Self-service request/status and admin approval/rejection are implemented; the
+whole-company app mode is disabled. IAP remains the platform authentication
+layer, and initial deployment must be owner-only until bootstrap. See access.md.
+Owner reports project approval and will provide final assigned name after local
+preparation. That report is not a substitute for MCP project-list verification.

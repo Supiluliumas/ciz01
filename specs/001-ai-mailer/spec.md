@@ -32,7 +32,9 @@ simulation proves the UI flow only; real receipt is separate acceptance evidence
 
 The first authenticated visitor becomes administrator. Administrators can add
 and remove administrators and allowed users. Access starts restricted to the
-allow-list. Administrators may explicitly open access to colleagues.
+allow-list. Corporate colleagues may request access; administrators approve or
+reject individual addresses. Organisation-wide access is disabled by the
+2026-10-08 requirement in specs/002-access-requests/spec.md.
 
 **Why this priority**: Access control is required from the first release.
 **Independent Test**: Bootstrap one admin, deny a second user, admit that user,
@@ -42,7 +44,7 @@ and ensure ordinary users cannot edit access or remove the final admin.
 1. **Given** an empty app, **When** two visitors arrive concurrently, **Then**
    exactly one becomes administrator.
 2. **Given** an unlisted colleague, **When** using the app, **Then** access is
-   denied with a message to contact an administrator.
+   denied from features and the colleague can submit/check their own request.
 3. **Given** the final administrator, **When** removing them, **Then** the
    operation is rejected.
 
@@ -86,7 +88,8 @@ empty state for an empty table.
 - **FR-006**: Enforce Story 2 access and administrator restrictions.
 - **FR-007**: Do not persist email bodies or instructions in the app.
 - **FR-008**: Persist only access settings and minimal send coordination
-  (identifier, owner, fingerprint, timestamp, status).
+  (identifier, owner, fingerprint, timestamp, status), plus minimal access-request
+  metadata (identity, status, creation/review timestamps and reviewer).
 - **FR-009**: Read-only preview of at most 20 supplied test rows.
 - **FR-010**: Responsive Czech screens with loading, empty, error,
   unauthorized, and confirmation states.
@@ -95,7 +98,8 @@ empty state for an empty table.
 
 ### Key Entities
 
-- **User access**: normalized email and role, plus organisation access mode.
+- **User access**: normalized corporate email and role, individual allow-list only.
+- **Access request**: corporate identity, status and creation/review metadata.
 - **Draft**: recipient, instructions, tone, language, subject, body; transient.
 - **Send attempt**: identifier, owner, content fingerprint, and result.
 - **Test preview**: headings and up to 20 rows; transient, read-only.

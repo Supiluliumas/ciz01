@@ -86,14 +86,14 @@ public class ApiTests
         Assert.Equal(HttpStatusCode.OK, (await other.DeleteAsync("/api/admin/members?email=owner%40alza.cz&role=admin")).StatusCode);
         Assert.Equal(HttpStatusCode.Forbidden, (await owner.GetAsync("/api/admin/access")).StatusCode);
     }
-    [Fact] public async Task ModeIsRestrictedByDefaultAndExplicitlyChangeable()
+    [Fact] public async Task OrganisationWideModeIsRejected()
     {
         using var app = new AppFactory(); using var owner = app.Client(); await owner.GetAsync("/api/me");
         var access = await owner.GetFromJsonAsync<JsonElement>("/api/admin/access");
         Assert.Equal("allowlist", access.GetProperty("mode").GetString());
-        await owner.PutAsJsonAsync("/api/admin/mode", new { mode="everyone" });
+        Assert.Equal(HttpStatusCode.BadRequest, (await owner.PutAsJsonAsync("/api/admin/mode", new { mode="everyone" })).StatusCode);
         using var user = app.Client("other@alza.cz");
-        Assert.Equal(HttpStatusCode.OK, (await user.GetAsync("/api/me")).StatusCode);
+        Assert.Equal(HttpStatusCode.Forbidden, (await user.GetAsync("/api/me")).StatusCode);
         Assert.Equal(HttpStatusCode.Forbidden, (await user.GetAsync("/api/admin/access")).StatusCode);
     }
     [Theory]

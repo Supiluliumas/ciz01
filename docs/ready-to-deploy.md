@@ -1,8 +1,9 @@
 # Ready-to-deploy handoff
 
 Assignment title: ciz01. Owner-approved short Vibe name:
-ciz01. The owner reports the dedicated project request is in approval;
-provisioning and platform visibility are pending.
+ciz01 was the requested name. On 2026-10-08 the owner reports project approval
+and will supply the actual assigned name after local preparation. Platform
+visibility, identifiers and store selection must still be verified.
 
 ## Work already prepared
 
@@ -35,6 +36,13 @@ presence, never values, tokens, or credentials. Readiness is not a live IAM,
 mailbox, Vertex, or Firestore check. Never put a secret in config.env just to
 make this check pass.
 
+## Access approval prepared
+
+The app now accepts requests from authenticated corporate identities and grants
+features only to individually approved members. No organisation-wide mode.
+See [access.md](access.md) for tested scenarios and initial owner-only IAP
+bootstrap before admitting other colleagues to the request page.
+
 ## Once the project is ready
 
 Give the coding agent the short assigned Vibe project name. It will verify
@@ -60,8 +68,11 @@ identifiers; the actual store variant and provider contracts still need checking
 
 ## Demonstration for academy review
 
-1. Owner opens the deployed Vibe URL and becomes initial administrator.
-2. Show administration: admit a colleague, grant/revoke another administrator,
+1. Before first deployment, restrict IAP to owner-only. Owner opens the deployed
+   Vibe URL and verifies initial administrator status; then admit intended
+   corporate identities through IAP to reach the request page.
+2. Show a colleague requesting access and an admin approving/rejecting requests.
+   Verify a pending user cannot use features. Grant/revoke another administrator,
    and demonstrate that the final administrator cannot be removed.
 3. Enter a recipient, Czech instructions, tone, and language. Generate a real
    Vertex draft; edit subject/body. Nothing has been sent yet.
@@ -85,3 +96,8 @@ IAP identity rely on that platform contract.
 Forwarded scheme handling follows [ASP.NET Core forwarded headers guidance](https://learn.microsoft.com/en-us/aspnet/core/breaking-changes/8/forwarded-headers-unknown-proxies?view=aspnetcore-10.0).
 Only X-Forwarded-Proto is processed, one hop; forwarded host and identity are
 not adopted. Local mode keeps the default known-proxy restrictions.
+
+Google sign-in expired during the 2026-10-08 preparation session. A documented
+`gcloud auth login --update-adc` browser flow was launched; completion must be
+verified before any next platform calls. Do not claim current platform metadata
+was refreshed until that succeeds. Local verification does not require tokens.

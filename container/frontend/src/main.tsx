@@ -1,17 +1,19 @@
 import React,{useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {ArrowUpRight,Mail,PenLine,Database,ShieldCheck,Leaf,ChevronRight,FlaskConical,LoaderCircle,LockKeyhole} from 'lucide-react';
-import {api,errorMessage,type Me} from './api';
+import {api,ApiError,errorMessage,type Me} from './api';
 import {Composer} from './Composer';
 import {Admin} from './Admin';
+import {AccessRequest} from './AccessRequest';
 import {TestData} from './TestData';
 import './styles.css';
 
 function App(){
- const [me,setMe]=useState<Me>();const [error,setError]=useState('');
- useEffect(()=>{api<Me>('/me').then(setMe).catch(e=>setError(errorMessage(e)));},[]);
+ const [me,setMe]=useState<Me>();const [error,setError]=useState('');const [blocked,setBlocked]=useState(false);
+ useEffect(()=>{api<Me>('/me').then(setMe).catch(e=>{setError(errorMessage(e));setBlocked(e instanceof ApiError&&e.status===403);});},[]);
  const path=window.location.pathname;
  const title=path==='/admin'?'Správa přístupu':path==='/test-data'?'Testovací data':'Nový e-mail';
+ if(blocked)return <AccessRequest denial={error}/>;
  if(error)return <main className="access-page"><LockKeyhole size={38}/><h1>Aplikace není dostupná</h1><p role="alert">{error}</p><button className="primary" onClick={()=>window.location.reload()}>Zkusit znovu</button></main>;
  if(!me)return <main className="access-page"><LoaderCircle className="spin"/><p>Ověřuju přístup…</p></main>;
  return <div className="app-shell">
@@ -31,7 +33,7 @@ function App(){
      {me.localMode&&<div className="demo-banner"><FlaskConical size={17}/><span><strong>Lokální ukázka.</strong> AI odpovědi a odesílání jsou simulované. Žádný e-mail se neodesílá; nastavení přístupu se při restartu smaže.</span></div>}
      <main className="content">
        {path==='/admin'?(me.isAdmin?<Admin me={me}/>:<section className="panel"><h1>Nemáš oprávnění správce.</h1></section>):path==='/test-data'?<TestData/>:<Composer localMode={me.localMode}/>}
-       <footer><span>cizkovsky_ai_academy_ukol</span><span><ShieldCheck size={13}/> Obsah e-mailů se v aplikaci neukládá.</span></footer>
+       <footer><span>ciz01</span><span><ShieldCheck size={13}/> Obsah e-mailů se v aplikaci neukládá.</span></footer>
      </main>
    </div>
  </div>;

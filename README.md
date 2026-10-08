@@ -40,7 +40,8 @@ Chromium dependency once with `npx --prefix container/frontend playwright instal
 - Czech responsive composer with recipient, instruction, tone, language,
   editable subject/body, explicit review dialog, and delivery acknowledgement.
 - IAP identity and default allow-list, first-admin bootstrap, administrator and
-  allowed-user management, last-admin protection, and organisation access mode.
+  allowed-user management, access requests with admin approval/rejection, and
+  last-admin protection. Only approved individual corporate emails may use features.
 - Production Vertex REST integration using ADC and structured output.
 - Server-side n8n Header Auth; Secret Manager-mounted N8N_AUTH_TOKEN.
 - Firestore transactions for access and delivery coordination; no email-body
@@ -48,6 +49,14 @@ Chromium dependency once with `npx --prefix container/frontend playwright instal
 - BigQuery read-only preview capped at 20 rows; no business database access.
 - Platform-compatible single-container Dockerfile, healthz, and configuration.
 - Spec Kit workflows and specification/plan/tasks committed before app implementation.
+
+## Corporate access requests
+
+[IAP and access approval](docs/access.md): corporate users can reach the request
+screen, but only individually approved accounts can use email/data features.
+Admins review requests in Správa přístupu. First deployment must initially
+restrict IAP to the owner until the administrator is initialized. No own login
+page is added; the platform handles corporate sign-in.
 
 ## Pending external acceptance
 

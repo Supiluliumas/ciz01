@@ -3,7 +3,7 @@
 ## Access
 
 `admins/{lowercase-email}` and `allowed_users/{lowercase-email}` contain email.
-`settings/access`: mode (`allowlist` or `everyone`), initialized, adminCount.
+`settings/access`: mode (`allowlist`; legacy `everyone` grants no access), initialized, adminCount.
 Every admin mutation reads/writes the same settings document in a transaction.
 Default allowlist; atomic first visitor becomes admin; adminCount cannot reach 0.
 Actor admin role is rechecked inside the mutation transaction.
@@ -21,5 +21,7 @@ No prompt, body, subject, or recipient is stored.
 Draft: recipient (single email, max 254), instructions (10–4000), tone enum
 professional/friendly/concise, language enum cs/en.
 Send: UUID requestId, recipient, subject (1–200, no newlines), body (1–10000).
-Access mutation: normalized email, role admin/user, mode allowlist/everyone.
+Access mutation: normalized email, role admin/user, mode allowlist only.
 Preview: headings and at most 20 rows, nested values rendered as JSON text.
+
+Access request persistence is specified in [002-access-requests](../002-access-requests/data-model.md).

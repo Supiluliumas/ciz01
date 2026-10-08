@@ -2,7 +2,7 @@
 
 **Feature Branch**: `feature/001-init` (pre-project local integration branch)
 **Created**: 2026-10-08
-**Status**: Ready for planning
+**Status**: Implemented and verified locally; cloud acceptance pending
 **Input**: Only approved individual enterprise emails may use the app; a colleague first requests access. Project is approved externally; final assigned name will be supplied after local preparation/testing.
 
 ## User Scenarios & Testing

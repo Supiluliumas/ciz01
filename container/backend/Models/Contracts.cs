@@ -19,6 +19,15 @@ public static class Input
             throw new AppError(400, "Zadej jednu platnou e-mailovou adresu.");
         return email;
     }
+    public static string CorporateEmail(string? value)
+    {
+        var email = Email(value);
+        var domain = email.Split('@')[1];
+        if(domain is not ("alza.cz" or "alza.sk") ||
+            !System.Text.RegularExpressions.Regex.IsMatch(email,@"^[a-z0-9._+-]+@(?:alza\.cz|alza\.sk)$"))
+            throw new AppError(400,"Použij konkrétní firemní adresu @alza.cz nebo @alza.sk.");
+        return email;
+    }
     public static string Text(string? value, int min, int max, string label)
     {
         var text = (value ?? "").Trim();
@@ -55,3 +64,7 @@ public sealed record MemberRequest(string Email, string Role);
 public sealed record ModeRequest(string Mode);
 public sealed record SendReservation(bool IsNew, string Status);
 public sealed record TestPreview(string[] Columns, string[][] Rows, bool Simulated, string Source);
+
+public sealed record AccessRequest(string Email,string Status,DateTimeOffset CreatedAt,
+    DateTimeOffset? ReviewedAt=null,string? ReviewedBy=null);
+public sealed record ReviewRequest(string Email,string Decision);

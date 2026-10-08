@@ -4,25 +4,25 @@
 - [x] T001 Write specification and design in specs/002-access-requests/spec.md and plan.md.
 
 ## Phase 2: Foundations
-- [ ] T002 Add failing identity/access/review security tests in container/backend.tests/AccessRequestTests.cs.
-- [ ] T003 Add corporate identity validation and DTO/store contracts in container/backend/Models/Contracts.cs and Access/IAppStore.cs; exact domains alza.cz/alza.sk, one normalized email identity.
+- [x] T002 Add failing identity/access/review security tests in container/backend.tests/AccessRequestTests.cs.
+- [x] T003 Add corporate identity validation and DTO/store contracts in container/backend/Models/Contracts.cs and Access/IAppStore.cs; exact domains alza.cz/alza.sk, one normalized email identity.
 
 ## Phase 3: Request access (US1)
-- [ ] T004 [US1] Implement idempotent own requests/status in container/backend/Access/MemoryAppStore.cs and FirestoreAppStore.cs; pending/rejected duplicates unchanged, revoked approval may reapply.
-- [ ] T005 [US1] Add exact authenticated self-service routes in container/backend/Endpoints/Api.cs.
-- [ ] T006 [US1] Implement request/status/error/retry page in container/frontend/src/AccessRequest.tsx and main.tsx.
+- [x] T004 [US1] Implement idempotent own requests/status in container/backend/Access/MemoryAppStore.cs and FirestoreAppStore.cs; pending/rejected duplicates unchanged, revoked approval may reapply.
+- [x] T005 [US1] Add exact authenticated self-service routes in container/backend/Endpoints/Api.cs.
+- [x] T006 [US1] Implement request/status/error/retry page in container/frontend/src/AccessRequest.tsx and main.tsx.
 
 ## Phase 4: Review requests (US2)
-- [ ] T007 [US2] Add atomic admin review/list in both container/backend/Access stores; require pending, recheck actor admin, all reads before writes, grant user only, list maximum 100.
-- [ ] T008 [US2] Add review endpoints and UI in container/backend/Endpoints/Api.cs and container/frontend/src/Admin.tsx.
+- [x] T007 [US2] Add atomic admin review/list in both container/backend/Access stores; require pending, recheck actor admin, all reads before writes, grant user only, list maximum 100.
+- [x] T008 [US2] Add review endpoints and UI in container/backend/Endpoints/Api.cs and container/frontend/src/Admin.tsx.
 
 ## Phase 5: Restricted access (US3)
-- [ ] T009 [US3] Remove everyone grants/options and recheck admin lists in container/backend/Access stores, Endpoints/Api.cs and container/frontend/src/Admin.tsx.
-- [ ] T010 [US3] Test request/decision/revocation/browser workflow in container/backend.tests/AccessRequestTests.cs and container/frontend/e2e/app.spec.ts.
+- [x] T009 [US3] Remove everyone grants/options and recheck admin lists in container/backend/Access stores, Endpoints/Api.cs and container/frontend/src/Admin.tsx.
+- [x] T010 [US3] Test request/decision/revocation/browser workflow in container/backend.tests/AccessRequestTests.cs and container/frontend/e2e/app.spec.ts.
 
 ## Phase 6: Verification
-- [ ] T011 Run full container/verify.sh and record docs/verification.md.
-- [ ] T012 Document owner-only IAP bootstrap, corporate request gate and final-name handoff in docs/access.md and docs/ready-to-deploy.md.
+- [x] T011 Run full container/verify.sh and record docs/verification.md.
+- [x] T012 Document owner-only IAP bootstrap, corporate request gate and final-name handoff in docs/access.md and docs/ready-to-deploy.md.
 
 ## Dependencies and implementation
 T001 -> T002/T003 -> request store/routes/UI -> review -> restricted access -> verification.

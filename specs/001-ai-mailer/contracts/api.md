@@ -13,7 +13,7 @@ to prevent cross-origin form submission; no CORS enabled.
 - GET /api/admin/access (admin): {admins,users,mode}.
 - POST /api/admin/members (admin): {email,role}.
 - DELETE /api/admin/members?email=...&role=... (admin).
-- PUT /api/admin/mode (admin): {mode}.
+- PUT /api/admin/mode (admin): {mode:"allowlist"}; organisation-wide mode rejected.
 - GET /api/test-data: {columns,rows,simulated,source}.
 
 Errors: JSON {message}, 400 validation, 401 identity, 403 access, 409 send-id
@@ -23,3 +23,6 @@ conflict/final admin removal/pending delivery, 502 external response error,
 n8n POST: {requestId,to,subject,body,requestedBy}. Secret in configured header,
 never Basic Auth. Required acknowledgement: {status:sent,requestId:<same UUID>}.
 No retries or redirects. Failure after dispatch means uncertain; check workflow.
+
+Authenticated self-service request and admin review endpoints are defined in
+[002-access-requests/contracts/api.md](../../002-access-requests/contracts/api.md).
