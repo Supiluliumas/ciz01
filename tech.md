@@ -47,7 +47,7 @@ User ──> https://<name>.vibe.alza.cz ──> Load balancer (platform) ──
                                                                                  ├── /healthz      health check (no auth)
                                                                                  ├── /api/*        backend endpoints
                                                                                  └── /*            React static files
-                                                 Service account ──> Firestore / Cloud Storage / Vertex AI / Secret Manager (mounted as env vars)
+                                                 Service account ──> Firestore / Cloud Storage / Vertex AI
 ```
 
 - **IAP authenticates users** with their Alza account and forwards the identity
@@ -59,8 +59,8 @@ User ──> https://<name>.vibe.alza.cz ──> Load balancer (platform) ──
 - Cloud Run: 1 vCPU, 2 GB, min 0 / max 2 instances, concurrency 80, request
   timeout 300 s, ingress = internal + load balancer. Managed by the platform.
 - Pre-provisioned, optional: **Firestore** (the data store), **Cloud Storage**,
-  **Vertex AI / Gemini**. **Secret Manager** for third-party credentials via
-  `create_secret`. The platform's PostgreSQL is *not* enabled for this project;
+  **Vertex AI / Gemini**. No store for third-party credentials yet (§14).
+  The platform's PostgreSQL is *not* enabled for this project;
   if the user genuinely needs relational data, a platform admin enables it in
   the vibe platform portal and this file switches to the PostgreSQL variant on
   the next `get_vibe_context`.
@@ -78,8 +78,7 @@ User ──> https://<name>.vibe.alza.cz ──> Load balancer (platform) ──
    loaded at startup, validated eagerly.
 7. **No secrets in the repo, the image, `config.env` or the data store.** GCP
    access (and the database) uses Application Default Credentials / IAM.
-   Third-party secrets: Secret Manager via `create_secret`, mounted as env
-   vars (§14).
+   Third-party secrets (API keys, passwords) are not supported yet (§14).
 8. **Identity from the IAP header only.** No login pages, OAuth flows, JWT
    checks, sessions. Compare emails case-insensitively.
 9. **Every app has access control** (§7): an admin panel, an `admins` list,
@@ -159,8 +158,6 @@ public sealed class AppSettings
 {
     [Required(AllowEmptyStrings = false)] public string GcpProjectId { get; set; } = "";
     public string GcsBucket { get; set; } = "";
-    // Secrets mounted by set_runtime_config / create_secret arrive as env vars:
-    // [Required] public string OpenAiApiKey { get; set; } = "";   // env OPENAI_API_KEY
 }
 
 // Program.cs (excerpt)
@@ -321,9 +318,7 @@ cd container/backend.tests && dotnet test
 ```
 
 The developer's own account has Firestore/Storage/Vertex permissions, so local
-code talks to the real project resources. No impersonation. Secrets for local
-runs: `export OPENAI_API_KEY=...` in the shell for the session, never in
-`config.env`.
+code talks to the real project resources. No impersonation.
 
 ## 11. CI/CD
 
@@ -342,8 +337,8 @@ service). ~5–10 minutes end to end. Nothing to configure.
 | Is my push deployed? What is live right now? | `get_deploy_status(branch=...)` → `state`, `failed_steps`, `currently_deployed`, `app_url` |
 | Why did it fail? | `get_deploy_log(run_id, step?)` |
 | History of deploys | `list_deploys(branch?)` |
-| Store an API key / password | `create_secret(name, value, env_var)` |
-| Set / read env vars and secret mounts | `set_runtime_config`, `get_runtime_config` |
+| Store an API key / password | Not supported yet — see §14 |
+| Set / read non-secret env vars | `set_runtime_config`, `get_runtime_config` |
 | Who can reach the app through IAP; admit / remove someone | `list_app_access`, `grant_app_access`, `revoke_app_access` |
 | Apply config without a code change | `redeploy(branch)` |
 
@@ -375,25 +370,22 @@ branch. Stale `feature/*` branches must never be pushed.
 
 ## 14. Secrets and runtime configuration
 
-1. Ask the user to paste the value in chat (never into a file).
-2. `create_secret(name="openai-api-key", value=<pasted>, env_var="OPENAI_API_KEY")`
-   — stores it regionally in Secret Manager, grants the app's service account
-   read access, and writes the mount into the runtime config.
-3. `redeploy(branch=<deployed branch>)` — the variable exists on the next
-   revision. Then poll `get_deploy_status`.
-4. In code read it from configuration (`builder.Configuration["OPENAI_API_KEY"]`,
-   `[Required]` in `AppSettings`). A mounted secret with no version fails the
-   deploy — `create_secret` always adds one.
-5. Rotation: `create_secret` again with the same name (new version, `:latest`
-   picks it up on the next deploy).
+**Third-party secrets (API keys, passwords, tokens) are not supported yet.**
+The platform has no tool to store them for the app. Never put one in the
+repo, the image, `config.env`, the data store or `set_runtime_config` — env
+vars there are plain text in a shared repository. If a feature needs one:
+
+1. Prefer what the app reaches with its own identity — Vertex AI / Gemini
+   instead of a third-party LLM key, Cloud Storage instead of an external
+   file service.
+2. Otherwise tell the user plainly that this part cannot be built yet and
+   that they should ask the platform team; build the rest without it.
+3. Do not ask the user to paste the secret in chat.
 
 Non-secret runtime overrides: `set_runtime_config(env_vars={...})`, or better
-`container/config.env` in the repo. `get_runtime_config` shows both files;
-secret values are never returned.
-
-If `create_secret` reports the platform lacks permission in the project, do
-what it says: the signed-in developer can create the secret with `gcloud` and
-then `set_runtime_config(secrets={"ENV": "secret-name:latest"})` mounts it.
+`container/config.env` in the repo, then `redeploy(branch=<deployed branch>)`.
+`get_runtime_config` shows the env vars and any secret mounts the platform
+team set up; secret values are never returned.
 
 ## 15. Deployment checklist
 

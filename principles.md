@@ -8,9 +8,9 @@ otherwise not used.)
 ## I. No Secrets in Code
 
 Never hardcode secrets, API keys, credentials, or sensitive configuration in
-source code. Secrets live in Secret Manager (`create_secret`) and reach the
-application as environment variables — never in the repository, never in
-`config.env`, never in Firestore. If a secret is accidentally committed, treat
+source code — never in the repository, never in `config.env`, never in
+Firestore. The platform cannot store third-party secrets for the app yet, so
+a feature that needs one waits until it can. If a secret is accidentally committed, treat
 it as compromised and rotate it immediately.
 
 ## II. Reusable Code

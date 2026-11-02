@@ -107,7 +107,7 @@ plan → implement → verify.
   would deploy old code over the live app.
 - **Migrating a local app**: keep its language, rewrite the plumbing to the
   platform contract in `tech.md` (one container, port 8080, `/healthz`, IAP
-  header identity, the project's data store, Secret Manager), point git at the
+  header identity, the project's data store, no secrets), point git at the
   platform repo. An app built in the pre-project state (above) already meets
   the contract: only the connect-and-push steps remain.
 
@@ -132,10 +132,11 @@ plan → implement → verify.
   app and are the first thing you add to an existing app that lacks them —
   before any feature. Opening the app to the whole company is a deliberate
   choice the user makes in the admin panel, never the default.
-- **Secrets never live in the repo, `config.env` or the data store.** Call
-  `create_secret` (stores it in Secret Manager and mounts it as an env var),
-  then `redeploy`. Read secrets from configuration in code.
-- **Runtime configuration** (env vars, secret mounts) goes through
+- **Third-party secrets (API keys, passwords) are not supported yet.** Never
+  put one in the repo, `config.env`, the data store or `set_runtime_config`.
+  If a feature needs one, tell the user it can't be built yet and to ask the
+  platform team (`tech.md` §14).
+- **Runtime configuration** (non-secret env vars) goes through
   `set_runtime_config`; it applies on the next deploy — call `redeploy`.
 - **Local development** uses the developer's own Google identity:
   `gcloud auth login --update-adc`. No impersonation, no key files, **no
@@ -148,7 +149,7 @@ plan → implement → verify.
 | The user says | You do |
 |---|---|
 | "Add user X" / "who can use the app?" | First the app's own admin panel / access list (`allowed_users`, `admins`). If X gets the IAP "You don't have access" page, they are not admitted by IAP: `grant_app_access(members=[X])`. `list_app_access` shows the IAP side. |
-| "Connect to service Z with this key" | `create_secret(name, value, env_var)` → `redeploy` → read the env var in code. The user pastes the value in chat once. |
+| "Connect to service Z with this key" | Not possible yet — the platform cannot store secrets. Don't take the key; offer a GCP alternative (e.g. Gemini) or tell the user to ask the platform team (`tech.md` §14). |
 | "Why is the app broken?" | `get_deploy_status` → `get_deploy_log` → fix → push → watch. Runtime errors: `gcloud run services logs read` (tech.md §12). |
 | "Is it live yet?" | `get_deploy_status(branch=...)`; report in one sentence. |
 | "Change setting Y" | Non-secret: `container/config.env` and push. Environment-specific override: `set_runtime_config`. |
