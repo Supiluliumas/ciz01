@@ -149,3 +149,14 @@ Error Workflow setting are not yet verified; no n8n access from the agent.
 Platform recheck on 2026-11-02 failed with an expired Google sign-in; the owner
 reports ciz01 is still not listed.
 
+
+## GCP project created, Vibe registration still missing — 2026-11-02
+
+AI Enablement e-mail: GCP project prj-gcp-l-plat-gencode-ciz01 created (old 1.0
+style access forms for GCP, Azure DevOps and a Basic licence attached; the 2.0
+install guide needs no Azure DevOps access or licence). After sign-in renewal,
+`gcloud projects describe l-plat-gencode-ciz01` returns ACTIVE with display name
+prj-gcp-l-plat-gencode-ciz01. `list_my_vibe_projects` still lists only shub, so
+ciz01 is not registered on the Vibe platform with the owner. config.env is left
+empty: identifiers must come from get_vibe_project_info. A name-based search of
+visible GCP projects found no evident academy BigQuery project.
