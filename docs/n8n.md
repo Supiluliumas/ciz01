@@ -7,13 +7,16 @@ this one does not). Import `n8n-workflow.json`; it is an unconfigured template.
 The agent has no connected n8n administration tool, so the owner performs the
 steps in the n8n UI.
 
-## Prerequisites (AI Enablement — Jakub Jakeš on Teams)
+## Prerequisites (self-service after the n8n invite)
 
-- n8n access: ask for a registration link. Sign-in is twofold: Google IAP with
-  the corporate account, then the n8n account itself.
-- **Microsoft Outlook credential** for the owner's mailbox. Microsoft
-  credentials are created by the n8n admin, not by users. The e-mail is sent
-  from the mailbox of this credential; the sender is never taken from input.
+- n8n access: the n8n admin e-mails a personal signup link (received
+  2026-11-02). Sign-in is twofold: Google IAP with the corporate account, then
+  the n8n account itself.
+- **Microsoft Outlook credential** for the owner's mailbox: after signup,
+  request Microsoft services through the n8n form linked in the invite e-mail.
+  Microsoft credentials are created by the n8n admin, not by users. The e-mail
+  is sent from the mailbox of this credential; the sender is never taken from
+  input.
 
 ## Steps
 
