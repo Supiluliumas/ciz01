@@ -26,11 +26,14 @@ Rationale: simple APIs with least data scope; no API key or arbitrary SQL.
 
 ## n8n
 
-Decision: POST webhook with Header Auth, SMTP Send Email, Respond to Webhook
+Decision: POST webhook with Header Auth, Microsoft Outlook send, Respond to Webhook
 returning status=sent and the same requestId. No automatic retries. Owner controls
 sender mailbox. Acknowledgement is not proof of inbox receipt.
 Rationale: academy hint and documented webhook behavior. Generic HTTP 200 alone
-is insufficient; SMTP may succeed before a timeout or later workflow failure.
+is insufficient; the send may succeed before a timeout or later workflow failure.
+Revision 2026-11-02: the internal Alza n8n guide makes the DEV instance
+n8n.dev.gcp.alza.cz the working host and Microsoft credentials admin-managed, so
+the originally planned SMTP node was replaced by the Outlook node.
 [Webhook](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook/).
 [Respond node](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.respondtowebhook/).
 

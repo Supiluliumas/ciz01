@@ -84,7 +84,7 @@ server shut down. No Docker, cloud resources or external email used.
 
 Live Firestore transaction behavior/IAM, actual data-store variant, Vertex
 model invocation, BigQuery table access, n8n import/execution, Secret Manager
-mount, SMTP delivery, CI scans/build and Cloud Run ingress remain unverified.
+mount, Outlook delivery, CI scans/build and Cloud Run ingress remain unverified.
 They require the dedicated registered project and actual integration setup.
 
 ## Authorized exceptions and pending work

@@ -1,16 +1,16 @@
 {
-  "name": "AI Academy Mailer — Header Auth",
+  "name": "ciz01 – odeslání e-mailu z aplikace přes Outlook",
   "nodes": [
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "ai-academy-mailer",
+        "path": "ciz01-mailer",
         "authentication": "headerAuth",
         "responseMode": "responseNode",
         "options": {}
       },
       "id": "academy-webhook",
-      "name": "Webhook",
+      "name": "Webhook z aplikace ciz01",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
@@ -21,10 +21,10 @@
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.first().json.body;\nif (!input || typeof input.to !== 'string' || !/^[^\\s@<>]+@[^\\s@<>]+\\.[^\\s@<>]+$/.test(input.to) || input.to.length > 254) throw new Error('Invalid recipient');\nif (typeof input.subject !== 'string' || !input.subject.trim() || input.subject.length > 200 || /[\\r\\n]/.test(input.subject)) throw new Error('Invalid subject');\nif (typeof input.body !== 'string' || !input.body.trim() || input.body.length > 10000) throw new Error('Invalid body');\nif (typeof input.requestId !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(input.requestId)) throw new Error('Invalid request ID');\nreturn [{json: input}];"
+        "jsCode": "const input = $input.first().json.body;\nif (!input || typeof input.to !== 'string' || !/^[^\\s@<>,;]+@[^\\s@<>,;]+\\.[^\\s@<>,;]+$/.test(input.to) || input.to.length > 254) throw new Error('Invalid recipient');\nif (typeof input.subject !== 'string' || !input.subject.trim() || input.subject.length > 200 || /[\\r\\n]/.test(input.subject)) throw new Error('Invalid subject');\nif (typeof input.body !== 'string' || !input.body.trim() || input.body.length > 10000) throw new Error('Invalid body');\nif (typeof input.requestId !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(input.requestId)) throw new Error('Invalid request ID');\nreturn [{json: input}];"
       },
       "id": "academy-validate",
-      "name": "Validate request",
+      "name": "Kontrola požadavku",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
@@ -34,18 +34,18 @@
     },
     {
       "parameters": {
-        "fromEmail": "owner@example.com",
-        "toEmail": "={{ $json.to }}",
+        "resource": "message",
+        "operation": "send",
+        "toRecipients": "={{ $json.to }}",
         "subject": "={{ $json.subject }}",
-        "emailFormat": "text",
-        "text": "={{ $json.body }}",
-        "options": {
-          "appendAttribution": false
+        "bodyContent": "={{ $json.body }}",
+        "additionalFields": {
+          "bodyContentType": "Text"
         }
       },
       "id": "academy-send",
-      "name": "Send Email",
-      "type": "n8n-nodes-base.emailSend",
+      "name": "Odeslat e-mail (Outlook)",
+      "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
         460,
@@ -55,49 +55,91 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ { status: 'sent', requestId: $('Webhook').first().json.body.requestId } }}",
+        "responseBody": "={{ { status: 'sent', requestId: $('Webhook z aplikace ciz01').first().json.body.requestId } }}",
         "options": {
           "responseCode": 200
         }
       },
       "id": "academy-response",
-      "name": "Respond to Webhook",
+      "name": "Potvrdit odeslání aplikaci",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
       "position": [
         690,
         0
       ]
+    },
+    {
+      "parameters": {},
+      "id": "academy-error-trigger",
+      "name": "Při chybě workflow",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "toRecipients": "martin.cizkovsky@alza.cz",
+        "subject": "=n8n: workflow {{ $json.workflow.name }} selhalo",
+        "bodyContent": "=Workflow: {{ $json.workflow.name }}\nSpuštění: {{ $json.execution.id }}\nChyba: {{ $json.execution.error.message }}\n\nE-mail pravděpodobně nebyl odeslán. Před novým pokusem zkontrolujte záložku Executions.",
+        "additionalFields": {
+          "bodyContentType": "Text"
+        }
+      },
+      "id": "academy-error-notify",
+      "name": "Upozornit vlastníka na chybu",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        230,
+        260
+      ]
     }
   ],
   "connections": {
-    "Webhook": {
+    "Webhook z aplikace ciz01": {
       "main": [
         [
           {
-            "node": "Validate request",
+            "node": "Kontrola požadavku",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Validate request": {
+    "Kontrola požadavku": {
       "main": [
         [
           {
-            "node": "Send Email",
+            "node": "Odeslat e-mail (Outlook)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Send Email": {
+    "Odeslat e-mail (Outlook)": {
       "main": [
         [
           {
-            "node": "Respond to Webhook",
+            "node": "Potvrdit odeslání aplikaci",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Při chybě workflow": {
+      "main": [
+        [
+          {
+            "node": "Upozornit vlastníka na chybu",
             "type": "main",
             "index": 0
           }

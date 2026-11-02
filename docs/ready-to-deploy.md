@@ -57,9 +57,9 @@ Other inputs may be prepared while the project is being provisioned:
 
 | Input | How it is used |
 | --- | --- |
-| Production n8n webhook URL | N8N_WEBHOOK_URL |
+| Published workflow at https://n8n.dev.gcp.alza.cz/webhook/ciz01-mailer | N8N_WEBHOOK_URL (already set) |
 | Header Auth credential named X-N8N-Token | Secret Manager mount N8N_AUTH_TOKEN; no Basic Auth |
-| Owner SMTP mailbox and credential in n8n | Fixed sender in the imported workflow |
+| Owner Outlook credential in n8n (from AI Enablement) | Fixed sender in the imported workflow |
 | Supplied academy BigQuery table reference | Read-only project / dataset / table configuration |
 | Approved available Vertex model in europe-west4 | VERTEX_MODEL; determined against project permissions |
 

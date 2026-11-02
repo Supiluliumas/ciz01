@@ -35,8 +35,9 @@ The long human-readable assignment name must not be used verbatim as the
 short platform name: GCP IDs allow at most 30 characters and the platform's
 `l-plat-gencode-` prefix consumes 15. Obtain actual identifiers from MCP.
 
-The academy also supplies its n8n host and BigQuery test dataset/table. Configure
-an owner SMTP mailbox in n8n. Choose a Vertex model actually available in the
+The academy supplies the BigQuery test dataset/table. n8n runs on Alza's DEV
+instance n8n.dev.gcp.alza.cz with the owner's admin-provided Outlook credential
+(see n8n.md). Choose a Vertex model actually available in the
 assigned region. These dependencies are not present in this workspace.
 
 ## Connect the project

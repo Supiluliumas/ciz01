@@ -67,7 +67,7 @@ No emails were sent during these tests.
 1. Assigned short Vibe project name, registered with the user as owner/admin.
    Owner-approved short name: ciz01. Actual IDs must come from platform MCP.
 2. Production n8n webhook URL and matching Header Auth credential stored using
-   Secret Manager, plus owner SMTP mailbox in the n8n workflow.
+   Secret Manager, plus owner Outlook credential in the n8n workflow.
 3. Academy BigQuery project/dataset/table reference and appropriate read grants.
 4. Approved Vertex model available in europe-west4 and invocation permissions.
 
@@ -133,3 +133,19 @@ is github; future Vibe origin remains separate. No Cloud Run/IAM change or live
 integration acceptance is implied. Full local verification was rerun before
 push. Historical Git blobs scanned for common credential/private-key patterns:
 179 scanned, no likely matches (pattern scan, not proof for all secret formats).
+
+## n8n aligned with the internal Alza n8n guide — 2026-11-02
+
+Owner supplied the internal n8n guide. Workflow template now targets the DEV
+instance n8n.dev.gcp.alza.cz, sends through the Microsoft Outlook node with the
+admin-provided owner credential (SMTP removed), uses the unique path
+ciz01-mailer, descriptive Czech names, and an Error Trigger that notifies the
+owner (guide requires failure notification for published workflows). Validator
+now also rejects `,`/`;` recipient lists. N8N_WEBHOOK_URL set to the production
+path; it works only after the owner imports and publishes the workflow.
+Full `bash container/verify.sh` passed: 54 backend + 17 browser/HTTP + 12
+workflow + 5 readiness = 88 tests. Import into the real n8n, Outlook send and
+Error Workflow setting are not yet verified; no n8n access from the agent.
+Platform recheck on 2026-11-02 failed with an expired Google sign-in; the owner
+reports ciz01 is still not listed.
+
