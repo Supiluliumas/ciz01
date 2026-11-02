@@ -86,7 +86,7 @@
         "operation": "send",
         "toRecipients": "martin.cizkovsky@alza.cz",
         "subject": "=n8n: workflow {{ $json.workflow.name }} selhalo",
-        "bodyContent": "=Workflow: {{ $json.workflow.name }}\nSpuštění: {{ $json.execution.id }}\nChyba: {{ $json.execution.error.message }}\n\nE-mail pravděpodobně nebyl odeslán. Před novým pokusem zkontrolujte záložku Executions.",
+        "bodyContent": "=Workflow: {{ $json.workflow.name }}\nSpuštění: {{ $json.execution.id }}\nChyba: {{ $json.execution.error.message }}\n\nE-mail pravděpodobně nebyl odeslán. Před novým pokusem zkontrolujte složku Odeslaná pošta v Outlooku (průběh spuštění se kvůli ochraně obsahu neukládá).",
         "additionalFields": {
           "bodyContentType": "Text"
         }

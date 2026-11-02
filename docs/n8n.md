@@ -57,10 +57,11 @@ The validator accepts exactly one recipient (no `,` or `;` lists), a one-line
 subject up to 200 characters and a body up to 10 000 characters.
 
 The app reserves send identifiers transactionally before invoking the webhook.
-The same identifier will not call n8n twice, including after timeout or ambiguous
-failure. If Outlook sends but the acknowledgement is lost, check Executions
-before creating a new send attempt. Do not configure automatic retries around
-the non-idempotent send node; the workflow does not deduplicate IDs itself.
+The same identifier will not call n8n twice, including after timeout or
+ambiguous failure. If Outlook sends but the acknowledgement is lost, check the
+owner's Outlook Sent Items before creating a new send attempt (executions are
+not saved). Do not configure automatic retries around the non-idempotent send
+node; the workflow does not deduplicate IDs itself.
 
 No email content is persisted by the application itself; the template does not
 save execution data. Confirm instance-level retention in the actual n8n host.
