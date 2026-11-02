@@ -160,3 +160,14 @@ prj-gcp-l-plat-gencode-ciz01. `list_my_vibe_projects` still lists only shub, so
 ciz01 is not registered on the Vibe platform with the owner. config.env is left
 empty: identifiers must come from get_vibe_project_info. A name-based search of
 visible GCP projects found no evident academy BigQuery project.
+
+## ciz01 registered on the Vibe platform — 2026-11-02
+
+`list_my_vibe_projects` now lists ciz01 (owner registration done). Project info:
+GCP l-plat-gencode-ciz01, Firestore, app URL https://ciz01.vibe.alza.cz, nothing
+deployed (initial platform tag build failed only because the empty repo has no
+container/). Context updated to 92e43f1cc513: third-party secrets are no longer
+self-service; only the platform team can set up secret mounts.
+Owner's own GCP access is missing although the platform grants it with owner
+registration: Firestore, Storage and Vertex calls return 403 and
+testIamPermissions returns none of the checked permissions. Reported to owner.
