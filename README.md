@@ -17,6 +17,8 @@ Real Vertex, n8n delivery, Secret Manager and BigQuery acceptance remain pending
 Reviewers need permission to this private repository; publishing code here does
 not deploy the application or change platform access.
 
+Current status and next steps for the next agent: [handoff](docs/handoff.md).
+
 ## Canonical platform instructions
 
 Use root [install.md](install.md) together with [tech.md](tech.md) and
