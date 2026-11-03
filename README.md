@@ -8,14 +8,15 @@ read-only preview of the academy's BigQuery test table.
 
 Private GitHub repository: https://github.com/Supiluliumas/ciz01
 
-The application is implemented and locally verified. Review
+The application is implemented, locally verified and deployed to the Vibe
+platform at https://ciz01.vibe.alza.cz (branch `feature/001-init`). Review
 [verification evidence](docs/verification.md), [access approval](docs/access.md),
 [deployment handoff](docs/ready-to-deploy.md), and both Spec Kit feature folders.
-The complete local suite has 88 passing tests. Cloud deployment is blocked by
-platform registration/access: ciz01 is not yet visible for the owner's account.
-Real Vertex, n8n delivery, Secret Manager and BigQuery acceptance remain pending.
-Reviewers need permission to this private repository; publishing code here does
-not deploy the application or change platform access.
+The complete local suite has 98 passing tests. Email sending and the BigQuery
+preview report "not configured" until the n8n secret mount and the academy
+table grant arrive; real Vertex, n8n delivery, Secret Manager and BigQuery
+acceptance remain pending. Reviewers need permission to this private
+repository; publishing code here does not deploy the application.
 
 Current status and next steps for the next agent: [handoff](docs/handoff.md).
 
