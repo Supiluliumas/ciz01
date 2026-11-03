@@ -58,11 +58,17 @@ access requests, AI drafting if the SA can reach Vertex — not yet proven).
 - CI `2179810` + CD `2179822` succeeded; URL answers behind IAP (302 to Google).
 - Owner opened the app yet? **Unverified** — only his visit creates the first
   admin (bootstrap restricted to his email) and proves Firestore writes work.
-- Owner GCP permissions **still missing** at ~08:50 (only
-  `resourcemanager.projects.get`; even `getIamPolicy` disappeared; Vertex and
-  Cloud Run calls all 403/permission-denied). Jakeš said fixed at 08:06 — not
-  effective. Fallback: Jira "Přístup do Google Cloudu"
+- Owner GCP permissions **still missing** at ~09:30 (only
+  `resourcemanager.projects.get` + `getIamPolicy`; Vertex and Cloud Run calls
+  403). Diagnosed: the project IAM binds every role to Google groups
+  `GRP-GCP-L-PLAT-GENCODE-CIZ01-{ADM,DEV,READ}@alza.cz` — the owner is not an
+  effective member of any (Jakeš's 08:06 fix has not propagated or he is in no
+  group). Ask for membership in the **ADM** group; group-to-IAM propagation
+  can lag. Fallback: Jira "Přístup do Google Cloudu"
   https://jira.alza.cz/servicedesk/customer/portal/9/create/368.
+- The app SA `sa-gcp-ciz01` already holds `roles/aiplatform.user`,
+  `roles/datastore.user`, `roles/bigquery.jobUser`, `roles/run.invoker` — the
+  deployed app has everything it needs; only the owner's own access is missing.
 - `list_app_access` cannot manage IAP: platform SA lacks `roles/browser` in
   the project — report to AI Enablement. Meanwhile IAP admits the whole org;
   `BOOTSTRAP_ADMIN_EMAIL` covers the first-admin risk, the allow-list the rest.
