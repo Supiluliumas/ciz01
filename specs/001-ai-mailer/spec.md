@@ -69,6 +69,8 @@ empty state for an empty table.
 - Missing identity; local development identity must not appear in cloud mode.
 - Blocked or malformed AI output; webhook errors and timeouts.
 - Uncertain delivery is not automatically retried.
+- Sending or test-data preview called while its integration is not configured
+  reports "not configured" instead of fabricating a result.
 - Reusing a send identifier with changed content is rejected.
 - Unknown API paths return an API error, never frontend HTML.
 - Local in-memory access settings reset on restart; disclose this.
@@ -95,6 +97,12 @@ empty state for an empty table.
   unauthorized, and confirmation states.
 - **FR-011**: Clearly label simulations; local mode sends no real email.
 - **FR-012**: Never expose automation authentication material to the browser.
+- **FR-013**: n8n sending and the BigQuery preview are optional until their
+  configuration group is complete: the app still starts, the affected screen
+  and `/api/status` report the feature as not configured, sending is refused
+  before any send coordination record is written, and core drafting and access
+  control remain fully usable. Missing core configuration (project, model)
+  still refuses startup; malformed supplied values likewise.
 
 ### Key Entities
 
@@ -123,6 +131,8 @@ empty state for an empty table.
   and registered with the platform owner.
 - Czech and plain-text emails are reasonable defaults.
 - Sender mailbox, webhook authentication, and supplied test table are external
-  acceptance dependencies.
+  acceptance dependencies. Per the owner decision on 2026-11-03 the first cloud
+  deploy proceeds without them: those features report "not configured" until
+  the platform supplies the secret mount and the academy table.
 - Reading academy test data is an exception to no business-data access.
 - Simulation cannot establish certificate completion.

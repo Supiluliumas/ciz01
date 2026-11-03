@@ -1,7 +1,7 @@
 using Backend.Models;
 using Google.Cloud.Firestore;
 namespace Backend.Access;
-public sealed partial class FirestoreAppStore(FirestoreDb db) : IAppStore
+public sealed partial class FirestoreAppStore(FirestoreDb db,AppSettings config) : IAppStore
 {
     DocumentReference Settings => db.Collection("settings").Document("access");
     DocumentReference Member(string email,string role) => db.Collection(role=="admin"?"admins":"allowed_users").Document(email);
@@ -14,6 +14,9 @@ public sealed partial class FirestoreAppStore(FirestoreDb db) : IAppStore
         {
             var existing=await tx.GetSnapshotAsync(db.Collection("admins"),ct);
             var first=existing.Count==0;
+            if(first && config.BootstrapAdminEmail.Length>0 &&
+                !email.Equals(config.BootstrapAdminEmail,StringComparison.OrdinalIgnoreCase))
+                return new AccessDecision(false,false);
             if(first) tx.Set(Member(email,"admin"),new Dictionary<string,object>{{"email",email}});
             tx.Set(Settings,new Dictionary<string,object>{{"mode","allowlist"},{"initialized",true},{"adminCount",first?1:existing.Count}});
             return new AccessDecision(first||admin.Exists||user.Exists,first||admin.Exists);

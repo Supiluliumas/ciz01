@@ -30,6 +30,8 @@ cp "$APP_DIR/config.env" "$VERIFY_DIR/config.env"
 (
     cd "$VERIFY_DIR"
     export VIBE_LOCAL=1
+    # Same as run-local.sh: the demo identity must be able to bootstrap admin.
+    export BOOTSTRAP_ADMIN_EMAIL=demo@alza.cz
     exec dotnet Backend.dll --urls "http://127.0.0.1:$VERIFY_PORT"
 ) > "$REPO_DIR/.tools/verification-server.log" 2>&1 &
 VERIFY_PID=$!

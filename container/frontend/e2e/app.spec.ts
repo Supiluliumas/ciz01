@@ -81,6 +81,18 @@ test('empty supplied table has a clear empty state',async({page})=>{
  await page.goto('/test-data');await page.getByRole('button',{name:'Načíst testovací data'}).click();
  await expect(page.getByText('Testovací tabulka je prázdná.')).toBeVisible();
 });
+test('unconfigured integrations show an explicit state instead of broken actions',async({page})=>{
+ await page.route('**/api/status',route=>route.fulfill({json:{localMode:false,ai:'configured',email:'not-configured',testData:'not-configured',secret:'not-configured'}}));
+ await page.goto('/');
+ await expect(page.getByRole('status')).toContainText('Odesílání e-mailů zatím není nastavené');
+ await page.getByLabel('Příjemce',{exact:false}).fill('test@example.com');
+ await page.getByRole('button',{name:'Domluvit schůzku'}).click();
+ await page.getByRole('button',{name:'Vytvořit ukázkový návrh'}).click();
+ await expect(page.getByRole('button',{name:'Zkontrolovat a odeslat'})).toBeDisabled();
+ await page.goto('/test-data');
+ await expect(page.getByRole('status')).toContainText('Náhled testovacích dat zatím není nastavený');
+ await expect(page.getByRole('button',{name:'Načíst testovací data'})).toBeDisabled();
+});
 test('data failure permits retry and never fabricates rows',async({page})=>{
  await page.route('**/api/test-data',route=>route.fulfill({status:502,json:{message:'Chybí oprávnění k testovací tabulce.'}}));
  await page.goto('/test-data');await page.getByRole('button',{name:'Načíst testovací data'}).click();

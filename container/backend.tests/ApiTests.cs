@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using Backend;
 using Backend.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -11,13 +12,24 @@ namespace Backend.Tests;
 
 public class AppFactory : WebApplicationFactory<Program>
 {
-    public AppFactory() => Environment.SetEnvironmentVariable("VIBE_LOCAL", "1");
+    readonly Dictionary<string, string?> extra;
+    public AppFactory(Dictionary<string, string?>? extra = null)
+    {
+        Environment.SetEnvironmentVariable("VIBE_LOCAL", "1");
+        this.extra = extra ?? new();
+    }
     public CountingSender Sender { get; } = new();
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureAppConfiguration((_, config) => config.AddInMemoryCollection(
             new Dictionary<string, string?> { ["VIBE_LOCAL"] = "1" }));
-        builder.ConfigureServices(services => services.AddSingleton<IMailSender>(Sender));
+        builder.ConfigureServices(services =>
+        {
+            services.AddSingleton<IMailSender>(Sender);
+            if (extra.Count > 0)
+                services.AddSingleton(AppSettings.Load(new ConfigurationBuilder()
+                    .AddInMemoryCollection(new Dictionary<string, string?> { ["VIBE_LOCAL"] = "1" }.Concat(extra)).Build()));
+        });
     }
     public HttpClient Client(string? email = "owner@alza.cz")
     {
@@ -55,6 +67,24 @@ public class ApiTests
         Assert.True(me.GetProperty("isAdmin").GetBoolean());
         using var stranger = app.Client("stranger@alza.cz");
         Assert.Equal(HttpStatusCode.Forbidden, (await stranger.GetAsync("/api/me")).StatusCode);
+    }
+    [Fact] public async Task BootstrapRestrictionKeepsStrangerOutUntilOwnerInitializes()
+    {
+        using var app = new AppFactory(new() { ["BOOTSTRAP_ADMIN_EMAIL"] = "owner@alza.cz" });
+        using var stranger = app.Client("stranger@alza.cz");
+        Assert.Equal(HttpStatusCode.Forbidden, (await stranger.GetAsync("/api/me")).StatusCode);
+        Assert.Equal(HttpStatusCode.Forbidden, (await stranger.GetAsync("/api/me")).StatusCode);
+        using var owner = app.Client("owner@alza.cz");
+        Assert.True((await owner.GetFromJsonAsync<JsonElement>("/api/me")).GetProperty("isAdmin").GetBoolean());
+        Assert.Equal(HttpStatusCode.Forbidden, (await stranger.GetAsync("/api/admin/access")).StatusCode);
+    }
+    [Fact] public async Task StatusReportsSimulationOnlyInLocalMode()
+    {
+        using var app = new AppFactory(); using var owner = app.Client();
+        var status = await owner.GetFromJsonAsync<JsonElement>("/api/status");
+        Assert.Equal("simulation", status.GetProperty("email").GetString());
+        Assert.Equal("simulation", status.GetProperty("testData").GetString());
+        Assert.Equal("not-used", status.GetProperty("secret").GetString());
     }
     [Fact] public async Task ConcurrentBootstrapCreatesOneAdmin()
     {

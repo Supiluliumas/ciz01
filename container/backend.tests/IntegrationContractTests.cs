@@ -2,6 +2,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Backend;
+using Backend.Access;
 using Backend.Models;
 using Backend.Services;
 using Microsoft.Extensions.Configuration;
@@ -14,7 +15,7 @@ public sealed class ReplyHandler(Func<HttpRequestMessage,HttpResponseMessage> re
 }
 public class IntegrationContractTests
 {
-    static AppSettings Settings => new(false,"unit-test-project","europe-west4","configured-model","https://n8n.example.test/webhook/mail","X-N8N-Token","unit-test-value","unit-test-project","academy","sample");
+    static AppSettings Settings => new(false,"unit-test-project","europe-west4","configured-model","https://n8n.example.test/webhook/mail","X-N8N-Token","unit-test-value","unit-test-project","academy","sample","");
     static HttpResponseMessage Json(string content,HttpStatusCode code=HttpStatusCode.OK)=>new(code){Content=new StringContent(content,Encoding.UTF8,"application/json")};
     [Fact] public async Task N8nUsesHeaderAuthAndExactAcknowledgement()
     {
@@ -68,5 +69,38 @@ public class IntegrationContractTests
     {
         var config=new Microsoft.Extensions.Configuration.ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string,string?>()).Build();
         Assert.Throws<InvalidOperationException>(()=>AppSettings.Load(config));
+    }
+    [Fact] public void CloudModeStartsWithCoreOnlyAndReportsIntegrationsOff()
+    {
+        var config=new Microsoft.Extensions.Configuration.ConfigurationBuilder().AddInMemoryCollection(
+            new Dictionary<string,string?>{["GCP_PROJECT_ID"]="unit-test-project",["VERTEX_MODEL"]="configured-model"}).Build();
+        var settings=AppSettings.Load(config);
+        Assert.False(settings.MailConfigured);Assert.False(settings.TestDataConfigured);
+    }
+    [Fact] public void CloudModeRejectsMalformedOptionalValues()
+    {
+        var config=new Microsoft.Extensions.Configuration.ConfigurationBuilder().AddInMemoryCollection(
+            new Dictionary<string,string?>{["GCP_PROJECT_ID"]="unit-test-project",["VERTEX_MODEL"]="configured-model",["N8N_WEBHOOK_URL"]="http://insecure.example.test"}).Build();
+        Assert.Throws<InvalidOperationException>(()=>AppSettings.Load(config));
+    }
+    [Fact] public void CloudModeRejectsNonCorporateBootstrapEmail()
+    {
+        var config=new Microsoft.Extensions.Configuration.ConfigurationBuilder().AddInMemoryCollection(
+            new Dictionary<string,string?>{["GCP_PROJECT_ID"]="unit-test-project",["VERTEX_MODEL"]="configured-model",["BOOTSTRAP_ADMIN_EMAIL"]="outsider@example.com"}).Build();
+        Assert.Throws<InvalidOperationException>(()=>AppSettings.Load(config));
+    }
+    [Fact] public async Task UnconfiguredMailRefusesSendBeforeReservation()
+    {
+        var settings=Settings with {WebhookUrl="",AuthToken=""};
+        var sender=new CountingSender();
+        var service=new DeliveryService(new MemoryAppStore(settings),sender,settings,Microsoft.Extensions.Logging.Abstractions.NullLogger<DeliveryService>.Instance);
+        var error=await Assert.ThrowsAsync<AppError>(()=>service.SendAsync(new SendRequest(Guid.NewGuid(),"a@example.com","Test","Body"),"owner@alza.cz",default));
+        Assert.Equal(503,error.Status);Assert.Equal(0,sender.Calls);
+    }
+    [Fact] public async Task UnconfiguredBigQueryRefusesPreview()
+    {
+        var settings=Settings with {BigQueryProject="",BigQueryDataset="",BigQueryTable=""};
+        var error=await Assert.ThrowsAsync<AppError>(()=>new BigQueryTestData(new GoogleHttp(new HttpClient(new ReplyHandler(_=>Json("{}"))),new FakeToken()),settings).ReadAsync(default));
+        Assert.Equal(503,error.Status);
     }
 }

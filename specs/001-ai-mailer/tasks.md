@@ -55,3 +55,9 @@ T017/T018 are externally dependent and must remain unchecked until evidenced.
 
 T017/T018 remain pending: project registration, actual data-store selection,
 platform reconciliation, CI/CD, secret mount and live integration acceptance.
+
+## Phase 8: First-deploy hardening (owner decision 2026-11-03)
+
+- [x] T024 Make n8n sending and the BigQuery preview optional until configured per FR-013: core settings required, integration groups all-or-nothing, AppSettings, DeliveryService and BigQueryTestData guards, truthful /api/status.
+- [x] T025 Surface "not configured" on the affected screens in container/frontend/src (Composer, TestData) and cover with container/frontend/e2e/app.spec.ts.
+- [x] T026 Split readiness into core keys vs integration groups in container/tools/readiness.py with container/tools/test_readiness.py coverage.

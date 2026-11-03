@@ -171,3 +171,25 @@ self-service; only the platform team can set up secret mounts.
 Owner's own GCP access is missing although the platform grants it with owner
 registration: Firestore, Storage and Vertex calls return 403 and
 testIamPermissions returns none of the checked permissions. Reported to owner.
+
+## First-deploy hardening for ciz01 — 2026-11-03
+
+Owner decisions: deploy now with optional integrations, restrict first-admin
+bootstrap to the owner, publish current work to the reviewer GitHub remote.
+Changes: n8n sending and the BigQuery preview are optional until configured
+(startup requires only GCP_PROJECT_ID and VERTEX_MODEL; all-or-nothing
+integration groups; /api/status reports configured / partial / not-configured;
+send is refused before any coordination record; the preview returns 503).
+Bootstrap restriction BOOTSTRAP_ADMIN_EMAIL=martin.cizkovsky@alza.cz keeps the
+first-admin race safe while IAP cannot be narrowed (platform service account
+lacks the project role for IAP management, confirmed by list_app_access).
+VERTEX_MODEL=gemini-2.5-flash; the resource-identifier validation was widened
+for dotted model names (would otherwise have crashed the first deploy).
+run-local.sh and verify.sh pin the demo bootstrap to demo@alza.cz.
+Full `bash container/verify.sh` passed: 61 backend + 18 browser/HTTP + 12
+workflow + 7 readiness = 98 tests. New coverage: bootstrap denial until the
+owner initializes, unconfigured send refused before reservation, unconfigured
+BigQuery 503, partial/all-or-nothing readiness states, not-configured UI.
+Owner GCP access still missing at 11:00 (only projects.get + getIamPolicy,
+Vertex predict denied); not needed for deployment — the app runs under its
+own service account.

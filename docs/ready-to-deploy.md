@@ -1,11 +1,9 @@
 # Ready-to-deploy handoff
 
-Assignment title: ciz01. Owner-approved short Vibe name:
-The owner supplied approved request name `prj-gcp-l-plat-gencode-ciz01` on
-2026-10-08; the short platform name is `ciz01`. Google account is
-`martin.cizkovsky@alza.cz`. Platform list currently returns only unrelated
-`shub`; registration/owner access for ciz01 must be checked by AI Enablement.
-Actual identifiers and store selection are not yet verified.
+Assignment title: ciz01. Vibe project `ciz01` is registered to the owner.
+GCP project `l-plat-gencode-ciz01` (europe-west4, Firestore), app URL
+https://ciz01.vibe.alza.cz, Cloud Run `cr-gc1-l-plat-gencode-ciz01-ciz01app`,
+service account `sa-gcp-ciz01@l-plat-gencode-ciz01.iam.gserviceaccount.com`.
 
 ## Work already prepared
 
@@ -53,26 +51,28 @@ reconcile with the platform repository, and preserve the company pipelines.
 If it uses PostgreSQL instead of Firestore, the IAppStore implementation must
 be adapted before deploying; this cannot be determined before registration.
 
-Other inputs may be prepared while the project is being provisioned:
+Remaining inputs (the app deploys without them; the features stay "not
+configured" until the whole group is present):
 
 | Input | How it is used |
 | --- | --- |
 | Published workflow at https://n8n.dev.gcp.alza.cz/webhook/ciz01-mailer | N8N_WEBHOOK_URL (already set) |
-| Header Auth credential named X-N8N-Token | Secret Manager mount N8N_AUTH_TOKEN; no Basic Auth |
+| Header Auth credential named X-N8N-Token | Secret Manager mount N8N_AUTH_TOKEN; no Basic Auth; the platform team must create the secret and mount it — owner asked to request this from AI Enablement and add the version himself |
 | Owner Outlook credential in n8n (from AI Enablement) | Fixed sender in the imported workflow |
-| Supplied academy BigQuery table reference | Read-only project / dataset / table configuration |
-| Approved available Vertex model in europe-west4 | VERTEX_MODEL; determined against project permissions |
+| Supplied academy BigQuery table reference | BIGQUERY_PROJECT_ID / BIGQUERY_DATASET / BIGQUERY_TABLE; academy must grant the app service account read access |
+| Vertex model in europe-west4 | VERTEX_MODEL=gemini-2.5-flash (dotted names allowed since 2026-11-03) |
 
-The agent will configure the secret through platform tools, run configuration
-checks, verify APIs and permissions, push the tested feature branch through
-vibe-git, and watch CI/CD. No app code change should be needed for integration
-identifiers; the actual store variant and provider contracts still need checking.
+The agent pushes the tested feature branch through vibe-git and watches CI/CD.
+No app code change is needed to switch an integration on later: fill the config
+and redeploy.
 
 ## Demonstration for academy review
 
-1. Before first deployment, restrict IAP to owner-only. Owner opens the deployed
-   Vibe URL and verifies initial administrator status; then admit intended
-   corporate identities through IAP to reach the request page.
+1. IAP currently admits the whole organisation (the platform cannot narrow it
+   yet), so `BOOTSTRAP_ADMIN_EMAIL=martin.cizkovsky@alza.cz` guarantees the
+   first admin can only be the owner. Owner opens the deployed Vibe URL and
+   verifies initial administrator status; colleagues then reach the request
+   page and apply individually — the allow-list gates every feature anyway.
 2. Show a colleague requesting access and an admin approving/rejecting requests.
    Verify a pending user cannot use features. Grant/revoke another administrator,
    and demonstrate that the final administrator cannot be removed.

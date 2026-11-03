@@ -26,9 +26,20 @@ class ReadinessTests(unittest.TestCase):
                'BIGQUERY_TABLE':'sample', 'N8N_AUTH_TOKEN':'env-unit-test-value'}
         report = self.assess('GCP_PROJECT_ID=\n', env)
         self.assertTrue(report['ready_configuration'])
+        self.assertEqual('configured', report['integrations']['email'])
+        self.assertEqual('configured', report['integrations']['test_data'])
         self.assertNotIn('env-unit-test-value', json.dumps(report))
         env['VIBE_LOCAL'] = '1'
         self.assertFalse(self.assess('', env)['ready_configuration'])
+    def test_core_only_deploys_with_integrations_off(self):
+        report = self.assess('GCP_PROJECT_ID=p\nVERTEX_MODEL=m\n')
+        self.assertTrue(report['ready_configuration'])
+        self.assertEqual('not-configured', report['integrations']['email'])
+        self.assertEqual('not-configured', report['integrations']['test_data'])
+    def test_partial_integration_is_reported_but_not_blocking(self):
+        report = self.assess('GCP_PROJECT_ID=p\nVERTEX_MODEL=m\nN8N_WEBHOOK_URL=https://automation.company.invalid/webhook/mail\n')
+        self.assertTrue(report['ready_configuration'])
+        self.assertEqual('partial', report['integrations']['email'])
     def test_basic_auth_and_test_webhook_are_rejected(self):
         report = self.assess('N8N_HEADER_NAME=Authorization\nN8N_WEBHOOK_URL=https://automation.company.invalid/webhook-test/mail\n')
         self.assertEqual(2, len(report['issues']))

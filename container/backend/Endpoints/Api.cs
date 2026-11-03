@@ -38,7 +38,10 @@ public static class Api
             var decision=Input.Choice(input.Decision,"approve","reject");
             await store.ReviewAsync(Actor(context),Input.CorporateEmail(input.Email),decision=="approve",ct);return Results.Ok();});
         api.MapGet("/me",(HttpContext context)=>new {email=Actor(context),isAdmin=(bool)context.Items["admin"]!,localMode=settings.Local});
-        api.MapGet("/status",()=>new {localMode=settings.Local,ai=settings.Local?"simulation":"configured",email=settings.Local?"simulation":"configured",testData=settings.Local?"simulation":"configured",secret=settings.Local?"not-used":"configured"});
+        api.MapGet("/status",()=>new {localMode=settings.Local,ai=settings.Local?"simulation":"configured",
+            email=settings.Local?"simulation":(settings.MailConfigured?"configured":"not-configured"),
+            testData=settings.Local?"simulation":(settings.TestDataConfigured?"configured":"not-configured"),
+            secret=settings.Local?"not-used":(settings.MailConfigured?"mounted":"not-configured")});
         api.MapPost("/drafts",async(DraftRequest input,IDraftGenerator generator,CancellationToken ct)=>await generator.GenerateAsync(input.Validated(),ct));
         api.MapPost("/send",async(SendRequest input,HttpContext context,DeliveryService service,CancellationToken ct)=>await service.SendAsync(input.Validated(),Actor(context),ct));
         api.MapGet("/test-data",async(ITestDataReader reader,CancellationToken ct)=>await reader.ReadAsync(ct));

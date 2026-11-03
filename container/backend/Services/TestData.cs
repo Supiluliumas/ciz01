@@ -11,6 +11,7 @@ public sealed class BigQueryTestData(GoogleHttp google,AppSettings settings) : I
 {
     public async Task<TestPreview> ReadAsync(CancellationToken ct)
     {
+        if(!settings.TestDataConfigured) throw new AppError(503,"Náhled testovacích dat zatím není nastavený.");
         var path=$"https://bigquery.googleapis.com/bigquery/v2/projects/{settings.BigQueryProject}/datasets/{settings.BigQueryDataset}/tables/{settings.BigQueryTable}";
         using var schema=await google.JsonAsync(HttpMethod.Get,path,null,ct);
         using var content=await google.JsonAsync(HttpMethod.Get,path+"/data?maxResults=20",null,ct);

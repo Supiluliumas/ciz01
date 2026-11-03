@@ -1,12 +1,14 @@
 import {useEffect,useRef,useState} from 'react';
 import {ArrowRight,Check,CheckCircle2,Copy,Mail,Plus,Send,Sparkles,LoaderCircle,X,CalendarDays,MessageSquare,HeartHandshake,TriangleAlert} from 'lucide-react';
-import {api,ApiError,errorMessage} from './api';
+import {api,ApiError,errorMessage,type Status} from './api';
 type Draft={subject:string,body:string,simulated:boolean};
 export function Composer({localMode}:{localMode:boolean}){
  const [recipient,setRecipient]=useState('');const [instructions,setInstructions]=useState('');const [tone,setTone]=useState('professional');const [language,setLanguage]=useState('cs');
  const [draft,setDraft]=useState<Draft>();const [generating,setGenerating]=useState(false);const [sending,setSending]=useState(false);const [review,setReview]=useState(false);const [error,setError]=useState('');const [outcome,setOutcome]=useState('');const [copied,setCopied]=useState(false);const [uncertain,setUncertain]=useState(false);const [requestId,setRequestId]=useState(()=>crypto.randomUUID());
+ const [mailOff,setMailOff]=useState(false);
  const reviewButton=useRef<HTMLButtonElement>(null);const dialog=useRef<HTMLDialogElement>(null);
  useEffect(()=>{if(review)dialog.current?.showModal();else dialog.current?.close();},[review]);
+ useEffect(()=>{api<Status>('/status').then(s=>setMailOff(s.email==='not-configured')).catch(()=>{});},[]);
  function reset(){setRecipient('');setInstructions('');setDraft(undefined);setError('');setOutcome('');setUncertain(false);setRequestId(crypto.randomUUID());}
  async function generate(event:React.FormEvent){event.preventDefault();setGenerating(true);setError('');setOutcome('');try{const result=await api<Draft>('/drafts','POST',{recipient,instructions,tone,language});setDraft(result);setUncertain(false);setRequestId(crypto.randomUUID());}catch(e){setError(errorMessage(e));}finally{setGenerating(false);}}
  function edit(field:'subject'|'body',value:string){if(draft)setDraft({...draft,[field]:value});setOutcome('');setRequestId(crypto.randomUUID());}
@@ -15,6 +17,7 @@ export function Composer({localMode}:{localMode:boolean}){
  return <>
    <div className="page-heading"><div><span className="eyebrow">MALÁ POMOC. LEPŠÍ KOMUNIKACE.</span><h1>Napiš méně. <span>Řekni víc.</span></h1><p>Proměň pár myšlenek v e-mail, který můžeš rovnou použít.</p></div><button className="secondary" onClick={reset} disabled={generating||sending}><Plus size={16}/>Nová zpráva</button></div>
    <div className="steps"><span className="current"><b>1</b>Zadej myšlenku</span><ArrowRight size={14}/><span className={draft?'current':''}><b>2</b>Uprav návrh</span><ArrowRight size={14}/><span><b>3</b>Zkontroluj a odešli</span></div>
+   {mailOff&&<div className="notice info" role="status">Odesílání e-mailů zatím není nastavené — návrh můžeš vytvořit a zkopírovat, odeslání se zapne po připojení služby.</div>}
    {error&&<div className="notice error" role="alert"><TriangleAlert size={18}/>{error}<button onClick={()=>setError('')} aria-label="Zavřít chybu"><X size={16}/></button></div>}
    {uncertain&&<div className="notice info" role="status">Výsledek odeslání je nejistý. Tento pokus znovu neodesíláme. Nejdřív ověř běh v n8n, než vytvoříš novou zprávu.</div>}
    {outcome&&<div className="notice success" role="status"><CheckCircle2 size={18}/>{outcome}</div>}
@@ -36,7 +39,7 @@ export function Composer({localMode}:{localMode:boolean}){
           {draft.simulated&&<span className="sample-tag">Ukázkový návrh · bez volání AI</span>}
           <label htmlFor="subject">Předmět</label><input id="subject" value={draft.subject} maxLength={200} onChange={e=>edit('subject',e.target.value)} disabled={sending}/>
           <div className="draft-to">Komu: <strong>{recipient}</strong></div><label htmlFor="body">Text e-mailu</label><textarea id="body" value={draft.body} maxLength={10000} rows={12} onChange={e=>edit('body',e.target.value)} disabled={sending}/>
-          <div className="draft-actions"><span><CheckCircle2 size={14}/>Před odesláním zkontroluj obsah.</span><button ref={reviewButton} className="primary" onClick={()=>setReview(true)} disabled={!draft.subject.trim()||!draft.body.trim()||!recipient||!!outcome||uncertain||generating||sending}><Send size={16}/>Zkontrolovat a odeslat</button></div>
+          <div className="draft-actions"><span><CheckCircle2 size={14}/>Před odesláním zkontroluj obsah.</span><button ref={reviewButton} className="primary" onClick={()=>setReview(true)} disabled={!draft.subject.trim()||!draft.body.trim()||!recipient||!!outcome||uncertain||generating||sending||mailOff}><Send size={16}/>Zkontrolovat a odeslat</button></div>
        </div>}
      </section>
    </div>

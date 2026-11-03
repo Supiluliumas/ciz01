@@ -31,3 +31,7 @@ Independent tests are described in spec.md/quickstart.md. No conflicting file
 work is delegated. UI-only refinements could run independently after APIs settle.
 MVP is US1 with all feature routes remaining denied; full delivery includes all
 three stories. Cloud acceptance is excluded until user supplies project name.
+
+## Phase 7: Bootstrap restriction (owner decision 2026-11-03)
+
+- [x] T013 Restrict first-admin bootstrap to BOOTSTRAP_ADMIN_EMAIL in container/backend/Access stores per FR-012; cover denial-until-owner-initializes in container/backend.tests/ApiTests.cs.

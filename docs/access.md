@@ -43,6 +43,11 @@ Do not first expose an uninitialized app to the whole organisation.
 2. Read list_app_access. Before first deployment, grant/retain the owner and
    restrict the IAP policy to owner-only while the app initializes, removing
    broad organisation/group admission as needed. Platform tools preserve owner.
+   If the platform cannot manage IAP (at the 2026-11-03 first deploy its
+   service account lacked the project role to do so), set
+   `BOOTSTRAP_ADMIN_EMAIL` to the owner instead: a stranger who opens the app
+   first is denied, cannot bootstrap, and nothing initializes until the owner
+   arrives. The allow-list then gates every feature regardless of IAP breadth.
 3. Push only reconciled/tested branch through vibe-git and watch CI/CD to the
    exact deployed commit. Owner opens the Vibe URL and verifies admin status.
 4. Only then admit intended corporate users/groups through IAP so they can

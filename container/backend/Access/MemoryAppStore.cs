@@ -1,6 +1,6 @@
 using Backend.Models;
 namespace Backend.Access;
-public sealed class MemoryAppStore : IAppStore
+public sealed class MemoryAppStore(AppSettings settings) : IAppStore
 {
     readonly object gate=new();
     readonly HashSet<string> admins=[];
@@ -12,7 +12,12 @@ public sealed class MemoryAppStore : IAppStore
     {
         lock(gate)
         {
-            if(!initialized) {admins.Add(email); initialized=true;}
+            if(!initialized)
+            {
+                if(settings.BootstrapAdminEmail.Length>0 && !email.Equals(settings.BootstrapAdminEmail,StringComparison.OrdinalIgnoreCase))
+                    return Task.FromResult(new AccessDecision(false,false));
+                admins.Add(email); initialized=true;
+            }
             return Task.FromResult(new AccessDecision(admins.Contains(email)||users.Contains(email),admins.Contains(email)));
         }
     }

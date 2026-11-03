@@ -34,6 +34,8 @@ public sealed class DeliveryService(IAppStore store,IMailSender sender,AppSettin
 {
     public async Task<object> SendAsync(SendRequest input,string actor,CancellationToken ct)
     {
+        if(!settings.Local && !settings.MailConfigured)
+            throw new AppError(503,"Odesílání e-mailů zatím není nastavené.");
         var reservation=await store.ReserveAsync(input.RequestId,actor,input.Fingerprint(),ct);
         if(!reservation.IsNew)
         {

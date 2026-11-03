@@ -67,6 +67,10 @@ first administrator initialization before requests are enabled for the company.
 - **FR-009**: A pending/rejected request grants no email, AI, data or admin permission.
 - **FR-010**: Show loading/error/retry states and explicit local-simulation status.
 - **FR-011**: Test access boundaries, review transitions and browser flows before cloud connection.
+- **FR-012**: When `BOOTSTRAP_ADMIN_EMAIL` is configured, only that identity may
+  create the first administrator; other visitors are denied and nothing is
+  initialized until the configured identity arrives. With the email unset the
+  platform's default first-visitor bootstrap applies (local demo).
 
 ### Key Entities
 
@@ -92,5 +96,8 @@ request screen, while the app denies features until approved. Narrowing IAP to
 approved users only would require an external access-request channel and is
 not automatically done by the application. No notification emails are sent.
 Admins may still explicitly add individual corporate members. Initial platform
-IAP access must be limited to the owner until first-admin initialization; this
-preserves the mandatory platform bootstrap without granting a stranger admin.
+IAP access should be limited to the owner until first-admin initialization;
+when the platform cannot narrow IAP (its service account lacked the needed
+project role at the 2026-11-03 deploy), `BOOTSTRAP_ADMIN_EMAIL` set to the
+owner is the equivalent in-app guarantee: a stranger arriving first is denied
+and cannot bootstrap, so no unapproved person can ever hold the first admin.

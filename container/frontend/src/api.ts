@@ -8,3 +8,4 @@ export async function api<T>(path:string, method='GET', body?:unknown):Promise<T
 }
 export const errorMessage=(error:unknown)=>error instanceof Error?error.message:'Něco se nepodařilo. Zkus to znovu.';
 export type Me={email:string,isAdmin:boolean,localMode:boolean};
+export type Status={localMode:boolean,ai:string,email:string,testData:string,secret:string};
